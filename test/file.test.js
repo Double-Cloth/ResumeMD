@@ -11,10 +11,16 @@ test('accepts Markdown and plain-text files within the size limit', () => {
 
 test('rejects unsupported and oversized imports', () => {
   const unsupported = validateImportFile({ name: 'resume.png', type: 'image/png', size: 100 });
+  const htmlText = validateImportFile({ name: 'resume.html', type: 'text/html', size: 100 });
+  const svgText = validateImportFile({ name: 'avatar.svg', type: 'image/svg+xml', size: 100 });
   const oversized = validateImportFile({ name: 'resume.md', type: 'text/markdown', size: MAX_IMPORT_BYTES + 1 });
 
   assert.equal(unsupported.ok, false);
   assert.match(unsupported.error, /Markdown 或纯文本/);
+  assert.equal(htmlText.ok, false);
+  assert.match(htmlText.error, /Markdown 或纯文本/);
+  assert.equal(svgText.ok, false);
+  assert.match(svgText.error, /Markdown 或纯文本/);
   assert.equal(oversized.ok, false);
   assert.match(oversized.error, /1 MiB/);
 });

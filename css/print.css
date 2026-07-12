@@ -37,7 +37,8 @@ body {
 
 .workspace,
 .preview-pane,
-.preview-scroll {
+.preview-scroll,
+.resume-document {
   display: block !important;
   width: auto !important;
   height: auto !important;
@@ -50,14 +51,23 @@ body {
 
 .resume-paper {
   width: 210mm;
-  max-width: 100%;
+  min-width: 210mm;
+  height: 297mm;
   min-height: 297mm;
   margin: 0 auto;
-  padding: 14mm 16mm 15mm;
+  padding: 13.5mm 17mm 15.5mm;
   border: 0;
+  outline: 0;
   box-shadow: none;
+  break-after: page;
+  page-break-after: always;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
+}
+
+.resume-paper:last-child {
+  break-after: auto;
+  page-break-after: auto;
 }
 
 .resume-section h2,
@@ -68,11 +78,6 @@ body {
 }
 
 .resume-entry {
-  break-inside: avoid;
-  page-break-inside: avoid;
-}
-
-.resume-basic-info {
   break-inside: avoid;
   page-break-inside: avoid;
 }

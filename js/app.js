@@ -7,14 +7,26 @@
   const errorPanel = document.getElementById('error-panel');
   const status = document.getElementById('document-status');
   const characterCount = document.getElementById('character-count');
+  const resumeStats = document.getElementById('resume-stats');
+  const pageCount = document.getElementById('page-count');
+  const snippetSelect = document.getElementById('snippet-select');
+  const zoomSelect = document.getElementById('zoom-select');
   const fileInput = document.getElementById('file-input');
   const workspace = document.querySelector('.workspace');
   const editorTab = document.getElementById('editor-tab');
   const previewTab = document.getElementById('preview-tab');
   const exampleSource = document.getElementById('example-source').textContent.trim();
-  const storage = api.createStorage(window.localStorage, 'resumemd.source.v1');
+  const storage = api.createStorage(getStorageBackend(), 'resumemd.source.v1');
   let renderTimer = null;
   let statusTimer = null;
+
+  function getStorageBackend() {
+    try {
+      return window.localStorage || null;
+    } catch (_error) {
+      return null;
+    }
+  }
 
   function setStatus(message, state, temporary) {
     status.textContent = message;
@@ -44,15 +56,131 @@
     errorPanel.textContent = errors.join(' ');
   }
 
+  function updateStats(stats) {
+    characterCount.textContent = stats.characters.toLocaleString('zh-CN') + ' 字符';
+    resumeStats.innerHTML = [
+      '<span id="character-count">' + stats.characters.toLocaleString('zh-CN') + ' 字符</span>',
+      '<span>' + stats.sections.toLocaleString('zh-CN') + ' 模块</span>',
+      '<span>' + stats.pages.toLocaleString('zh-CN') + ' 页</span>',
+    ].join('');
+    pageCount.textContent = stats.pages.toLocaleString('zh-CN') + ' 页';
+  }
+
+  function setPreviewZoom(value) {
+    const zoom = Number(value) || 1;
+    preview.style.setProperty('--preview-scale', String(zoom));
+  }
+
+  function getRenderedScale(element) {
+    if (!element || !element.offsetWidth) {
+      return 1;
+    }
+
+    const rect = element.getBoundingClientRect();
+    return rect.width ? rect.width / element.offsetWidth : 1;
+  }
+
+  function getElementRects(element) {
+    const rects = [];
+
+    if (!element) {
+      return rects;
+    }
+
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    Array.from(range.getClientRects()).forEach(function (rect) {
+      if (rect.width > 0) {
+        rects.push(rect);
+      }
+    });
+    if (typeof range.detach === 'function') {
+      range.detach();
+    }
+
+    return rects;
+  }
+
+  function measureHeaderLineWidth(element, headerLeft, scale) {
+    if (!element || !element.textContent.trim()) {
+      return 0;
+    }
+
+    const rects = element.classList && element.classList.contains('resume-contact-item')
+      ? Array.from(element.children).reduce(function (allRects, child) {
+        return allRects.concat(getElementRects(child));
+      }, [])
+      : getElementRects(element);
+
+    if (!rects.length) {
+      return 0;
+    }
+
+    const left = Math.min.apply(null, rects.map(function (rect) { return rect.left; }));
+    const right = Math.max.apply(null, rects.map(function (rect) { return rect.right; }));
+    const leftOffset = (left - headerLeft) / (scale || 1);
+
+    if (leftOffset > 6) {
+      return 0;
+    }
+
+    return (right - headerLeft) / (scale || 1);
+  }
+
+  function syncHeaderRuleWidths(pages) {
+    const pageList = pages && pages.length
+      ? pages
+      : Array.from(preview.querySelectorAll('.resume-paper'));
+    const scale = getRenderedScale(preview);
+
+    pageList.forEach(function (page) {
+      const header = page.querySelector('.resume-header');
+      if (!header) {
+        return;
+      }
+
+      const headerLeft = header.getBoundingClientRect().left;
+      const lineItems = header.querySelectorAll([
+        '.resume-header h1',
+        '.resume-title',
+        '.resume-contact-item',
+        '.resume-highlight-list span',
+      ].join(', '));
+      const maxWidth = Array.from(lineItems).reduce(function (width, item) {
+        return Math.max(width, measureHeaderLineWidth(item, headerLeft, scale));
+      }, 0);
+
+      if (maxWidth > 0) {
+        header.style.setProperty('--resume-header-rule-width', (1.75 * document.getElementsByClassName('resume-contact-item')[0].offsetWidth) + 'px');
+      } else {
+        header.style.removeProperty('--resume-header-rule-width');
+      }
+    });
+  }
+
   function renderDocument() {
+    if (renderTimer) {
+      window.clearTimeout(renderTimer);
+      renderTimer = null;
+    }
+
     const source = editor.value;
     const frontMatter = api.parseFrontMatter(source);
     const blocks = api.parseMarkdown(frontMatter.body);
     const bodyHTML = api.renderBlocks(blocks);
 
-    preview.innerHTML = api.buildResumeHTML(frontMatter.data, bodyHTML);
+    const resumeHTML = api.buildResumeHTML(frontMatter.data, bodyHTML);
+    let pages = [];
+    if (typeof api.paginateResume === 'function') {
+      pages = api.paginateResume(preview, resumeHTML);
+    } else {
+      preview.innerHTML = '<article class="resume-paper">' + resumeHTML + '</article>';
+      pages = Array.from(preview.querySelectorAll('.resume-paper'));
+    }
+    syncHeaderRuleWidths(pages);
     updateErrors(frontMatter.errors);
-    characterCount.textContent = source.length.toLocaleString('zh-CN') + ' 字符';
+    const stats = api.makeResumeStats(source, pages.length);
+    updateStats(stats);
     document.title = frontMatter.data.name
       ? frontMatter.data.name + '｜ResumeMD'
       : 'ResumeMD｜Markdown 简历生成器';
@@ -74,10 +202,30 @@
   }
 
   function replaceSource(source, message) {
-    editor.value = String(source || '');
+    editor.value = String(source == null ? '' : source);
     renderDocument();
     setStatus(message, 'saved', true);
     editor.focus();
+  }
+
+  function insertSelectedSnippet() {
+    const template = api.getSnippetTemplate(snippetSelect.value);
+    snippetSelect.value = '';
+    if (!template) {
+      return;
+    }
+
+    const result = api.insertSnippet(
+      editor.value,
+      editor.selectionStart,
+      editor.selectionEnd,
+      template
+    );
+    editor.value = result.value;
+    renderDocument();
+    editor.focus();
+    editor.setSelectionRange(result.selectionStart, result.selectionEnd);
+    setStatus('已插入模板', 'saved', true);
   }
 
   function exportSource() {
@@ -120,9 +268,17 @@
   });
 
   document.getElementById('export-button').addEventListener('click', exportSource);
+
+  snippetSelect.addEventListener('change', insertSelectedSnippet);
+
+  zoomSelect.addEventListener('change', function () {
+    setPreviewZoom(zoomSelect.value);
+  });
+
   document.getElementById('print-button').addEventListener('click', function () {
-    const frontMatter = api.parseFrontMatter(editor.value);
     setStatus('正在准备 PDF…', 'saving');
+    renderDocument();
+    const frontMatter = api.parseFrontMatter(editor.value);
 
     api.printResume({
       ownerDocument: document,
@@ -143,6 +299,12 @@
     }
   });
 
+  document.getElementById('clear-button').addEventListener('click', function () {
+    if (window.confirm('清空当前草稿后会自动保存空白内容，是否继续？')) {
+      replaceSource('', '已清空草稿');
+    }
+  });
+
   editorTab.addEventListener('click', function () {
     setMobileView('editor');
   });
@@ -159,9 +321,10 @@
   });
 
   const loaded = storage.load();
-  editor.value = loaded.ok && loaded.value ? loaded.value : exampleSource;
+  editor.value = loaded.ok && loaded.value !== null ? loaded.value : exampleSource;
   if (!loaded.ok) {
     setStatus('本地保存不可用', 'error');
   }
+  setPreviewZoom(zoomSelect.value);
   renderDocument();
 })();

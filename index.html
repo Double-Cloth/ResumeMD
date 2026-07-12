@@ -27,6 +27,10 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 9a8 8 0 1 1 .1 6.2M4.6 9V4.8M4.6 9h4.2"/></svg>
           <span>示例</span>
         </button>
+        <button class="toolbar-button" id="clear-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2m-9 0 1 15h8l1-15M10 11v6M14 11v6"/></svg>
+          <span>清空</span>
+        </button>
         <button class="toolbar-button" id="import-button" type="button">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14"/></svg>
           <span>导入</span>
@@ -54,7 +58,19 @@
             <p class="pane-kicker">SOURCE</p>
             <h1 id="editor-title">Markdown 编辑器</h1>
           </div>
-          <div class="document-status" id="document-status" aria-live="polite">准备就绪</div>
+          <div class="editor-tools">
+            <label class="visually-hidden" for="snippet-select">插入简历模板</label>
+            <select class="compact-select" id="snippet-select" aria-label="插入简历模板">
+              <option value="">插入模板</option>
+              <option value="profile">个人信息</option>
+              <option value="education">教育背景</option>
+              <option value="experience">实习经历</option>
+              <option value="project">项目经历</option>
+              <option value="skills">技能特长</option>
+              <option value="awards">荣誉奖项</option>
+            </select>
+            <div class="document-status" id="document-status" aria-live="polite">准备就绪</div>
+          </div>
         </div>
 
         <div class="error-panel" id="error-panel" role="status" aria-live="polite" hidden></div>
@@ -64,7 +80,11 @@
 
         <footer class="editor-footer">
           <span id="editor-hint">Front Matter 管理个人信息，正文使用 Markdown。</span>
-          <span id="character-count">0 字符</span>
+          <span class="resume-stats" id="resume-stats" aria-live="polite">
+            <span id="character-count">0 字符</span>
+            <span>0 模块</span>
+            <span>1 页</span>
+          </span>
         </footer>
       </section>
 
@@ -74,10 +94,18 @@
             <p class="pane-kicker">PREVIEW</p>
             <h2 id="preview-title">A4 实时预览</h2>
           </div>
-          <span class="preview-badge">A4</span>
+          <div class="preview-tools">
+            <span class="preview-badge" id="page-count">1 页</span>
+            <label class="visually-hidden" for="zoom-select">预览缩放</label>
+            <select class="compact-select compact-select-dark" id="zoom-select" aria-label="预览缩放">
+              <option value="0.85">85%</option>
+              <option value="1" selected>100%</option>
+              <option value="1.15">115%</option>
+            </select>
+          </div>
         </div>
         <div class="preview-scroll">
-          <article class="resume-paper" id="resume-preview" aria-label="简历预览"></article>
+          <div class="resume-document" id="resume-preview" aria-label="简历预览"></div>
         </div>
       </section>
     </main>
@@ -93,7 +121,11 @@ email: resume@example.com
 location: 上海
 website: github.com/example
 education: 本科在读
-experience: 3 年项目经验`r`nbirth: 2003.06`r`npolitical: 共青团员`r`ncity: 上海
+experience: 3 年项目经验
+photo: dist/photo.jpg
+birth: 2003.06
+political: 共青团员
+city: 上海
 ---
 
 ## 教育背景
@@ -102,8 +134,19 @@ experience: 3 年项目经验`r`nbirth: 2003.06`r`npolitical: 共青团员`r`nci
 
 `2023.09 - 2027.06`
 
-- **专业成绩：** GPA 3.8/4.0，专业前 10%
-- **主修课程：** 数据结构、操作系统、计算机网络、数据库系统、算法设计与分析
+- **专业成绩：** GPA 3.8/4.0，专业前 10%，连续两年获得校级奖学金。
+- **主修课程：** 数据结构、操作系统、计算机网络、数据库系统、软件工程、算法设计与分析。
+- **校园经历：** 担任学院技术社团负责人，组织 4 次前端与工程实践分享。
+
+## 实习经历
+
+### 星河科技｜前端开发实习生
+
+`2025.06 - 2025.09`
+
+- 参与内部运营平台改版，负责列表筛选、详情抽屉和批量操作等高频页面开发。
+- 基于原生组件封装表单校验和空状态展示，减少重复代码并提升页面一致性。
+- 配合后端完成接口联调和异常态处理，补充关键流程测试用例，降低回归风险。
 
 ## 项目经历
 
@@ -115,25 +158,35 @@ experience: 3 年项目经验`r`nbirth: 2003.06`r`npolitical: 共青团员`r`nci
 - 设计 100 位精度计算核心并实现高精度 Gamma 函数，持续优化大整数运算和 Canvas 交互性能。
 - 建立 Node.js 自动化测试、GitHub Actions 持续集成以及 Android、Windows 发行流程。
 
-### Markdown Resume｜前端开发
+### ResumeMD｜前端开发
 
 `2026.07`
 
-- 设计 Markdown 与结构化个人信息混合格式，实现实时 A4 简历预览与浏览器 PDF 导出。
-- 使用安全白名单处理链接协议，对全部用户文本进行 HTML 转义，确保应用可完全离线运行。
+- 设计 Markdown 与结构化个人信息混合格式，实现实时 A4 简历预览、多页分页和浏览器 PDF 导出。
+- 使用链接协议与头像路径白名单处理用户输入，对全部用户文本进行 HTML 转义，确保应用可完全离线运行。
+- 编写 Node.js 内置测试覆盖 Front Matter、Markdown 渲染、安全策略、文件导入和打印文档生成。
 
 ## 技能特长
 
-- **编程语言：** JavaScript、HTML、CSS、Python、SQL
-- **工程能力：** Git、Node.js、GitHub Actions、自动化测试、性能分析
-- **专业基础：** 数据结构与算法、操作系统、计算机网络、数据库系统</script>
+- **编程语言：** JavaScript、HTML、CSS、Python、SQL。
+- **工程能力：** Git、Node.js、GitHub Actions、自动化测试、性能分析、浏览器调试。
+- **专业基础：** 数据结构与算法、操作系统、计算机网络、数据库系统。
+- **工具协作：** Markdown 文档、需求拆解、接口联调、问题复盘。
+
+## 荣誉奖项
+
+- 2025 校级一等奖学金。
+- 2024 大学生创新创业训练计划优秀结题。
+- 2023 程序设计竞赛校赛二等奖。</script>
 
   <script defer src="js/frontmatter.js"></script>
   <script defer src="js/markdown.js"></script>
   <script defer src="js/renderer.js"></script>
   <script defer src="js/storage.js"></script>
   <script defer src="js/file.js"></script>
+  <script defer src="js/assist.js"></script>
   <script defer src="js/print.js"></script>
+  <script defer src="js/pagination.js"></script>
   <script defer src="js/app.js"></script>
 </body>
 </html>

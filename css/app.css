@@ -38,7 +38,8 @@ body {
 }
 
 button,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
@@ -48,7 +49,8 @@ button {
 
 button:focus-visible,
 a:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+select:focus-visible {
   outline: 3px solid rgb(15 191 159 / 28%);
   outline-offset: 2px;
 }
@@ -148,7 +150,9 @@ textarea:focus-visible {
 
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: 8px;
 }
 
@@ -260,6 +264,43 @@ textarea:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
+.editor-tools,
+.preview-tools {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 0;
+}
+
+.editor-tools {
+  flex-wrap: wrap;
+}
+
+.compact-select {
+  max-width: 132px;
+  height: 32px;
+  padding: 0 30px 0 10px;
+  border: 1px solid #d7dee8;
+  border-radius: 8px;
+  background: #fff;
+  color: #344054;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.compact-select-dark {
+  border-color: rgb(255 255 255 / 32%);
+  background: rgb(255 255 255 / 12%);
+  color: #fff;
+}
+
+.compact-select-dark option {
+  background: #fff;
+  color: #172033;
+}
+
 .document-status[data-state="saving"] {
   color: #b54708;
 }
@@ -321,7 +362,7 @@ textarea:focus-visible {
   font-size: 11px;
 }
 
-.editor-footer span:first-child {
+.editor-footer > span:first-child {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -330,6 +371,22 @@ textarea:focus-visible {
 #character-count {
   flex: 0 0 auto;
   font-variant-numeric: tabular-nums;
+}
+
+.resume-stats {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  color: #5b6678;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.resume-stats span + span::before {
+  margin-right: 8px;
+  color: #c0c8d2;
+  content: "/";
 }
 
 .preview-pane {
@@ -369,10 +426,19 @@ textarea:focus-visible {
   letter-spacing: 0.08em;
 }
 
+.preview-tools .compact-select {
+  max-width: 92px;
+}
+
 .preview-scroll {
   overflow: auto;
   padding: 34px 30px 70px;
   scrollbar-gutter: stable;
+}
+
+.preview-scroll .resume-document {
+  transform: scale(var(--preview-scale, 1));
+  transform-origin: top center;
 }
 
 .preview-scroll::-webkit-scrollbar {
@@ -499,8 +565,20 @@ textarea:focus-visible {
 
   .pane-header,
   .preview-topbar {
+    gap: 12px;
     min-height: 68px;
     padding: 13px 16px;
+  }
+
+  .editor-tools {
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .compact-select {
+    max-width: 112px;
+    height: 30px;
+    font-size: 11px;
   }
 
   .preview-pane {
@@ -516,8 +594,19 @@ textarea:focus-visible {
     padding: 0 12px;
   }
 
-  .editor-footer span:first-child {
+  .editor-footer > span:first-child {
     display: none;
+  }
+
+  .resume-stats {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 6px;
+    font-size: 10px;
+  }
+
+  .resume-stats span + span::before {
+    margin-right: 6px;
   }
 }
 
