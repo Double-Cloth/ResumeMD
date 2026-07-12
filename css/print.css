@@ -1,0 +1,88 @@
+@page {
+  size: A4;
+  margin: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: #fff !important;
+}
+
+.app-shell {
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.app-header,
+.mobile-tabs,
+.editor-pane,
+.preview-topbar,
+#file-input {
+  display: none !important;
+}
+
+.workspace,
+.preview-pane,
+.preview-scroll {
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: #fff !important;
+}
+
+.resume-paper {
+  width: 210mm;
+  max-width: 100%;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 14mm 16mm 15mm;
+  border: 0;
+  box-shadow: none;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.resume-section h2,
+.resume-body h3,
+.resume-entry-heading {
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.resume-entry {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.resume-basic-info {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.resume-body li {
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+a {
+  color: inherit !important;
+  text-decoration: none !important;
+}

@@ -1,0 +1,13 @@
+{
+  "name": "markdown-resume",
+  "version": "1.2.0",
+  "private": true,
+  "description": "完全离线、无第三方依赖的 Markdown 简历生成器",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
