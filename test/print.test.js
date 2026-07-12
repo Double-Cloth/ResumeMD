@@ -24,6 +24,17 @@ test('creates a safe standalone A4 print document', () => {
   assert.doesNotMatch(html, /app-shell|markdown-editor/);
 });
 
+test('prints paginated preview pages without nesting another paper', () => {
+  const html = buildPrintDocument({
+    resumeHTML: '<article class="resume-paper"><p>第一页</p></article><article class="resume-paper"><p>第二页</p></article>',
+    styles: '.resume-paper { width: 210mm; }',
+  });
+
+  assert.match(html, /<main class="resume-document">/);
+  assert.equal((html.match(/class="resume-paper"/g) || []).length, 2);
+  assert.doesNotMatch(html, /<article class="resume-paper"><article class="resume-paper"/);
+});
+
 test('collects readable CSS rules from selected stylesheets only', () => {
   const fakeDocument = {
     styleSheets: [

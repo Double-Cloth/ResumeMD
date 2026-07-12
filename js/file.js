@@ -23,7 +23,7 @@
     const name = String(file.name || '');
     const type = String(file.type || '').toLowerCase();
     const supportedExtension = /\.(?:md|markdown|txt)$/i.test(name);
-    const supportedType = !type || type === 'text/markdown' || type === 'text/plain' || type.startsWith('text/');
+    const supportedType = !type || type === 'text/markdown' || type === 'text/plain';
 
     if (!supportedExtension && !supportedType) {
       return { ok: false, error: '仅支持 Markdown 或纯文本文件。' };

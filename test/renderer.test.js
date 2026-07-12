@@ -4,14 +4,16 @@ const assert = require('node:assert/strict');
 const {
   buildResumeHTML,
   makeExportFilename,
+  normalizePhotoURL,
   normalizeWebsite,
 } = require('../js/renderer.js');
 
-test('renders a semantic resume header, basic information section, and body', () => {
+test('renders a semantic resume header with inline contact details, highlights, photo, and body', () => {
   const html = buildResumeHTML(
     {
       name: '张同学',
       title: '软件开发实习生',
+      photo: 'dist/photo.jpg',
       phone: '138 0000 0000',
       email: 'resume@example.com',
       location: '上海',
@@ -27,8 +29,9 @@ test('renders a semantic resume header, basic information section, and body', ()
   assert.match(html, /<div class="resume-identity">/);
   assert.match(html, /<h1>张同学<\/h1>/);
   assert.match(html, /<p class="resume-title">软件开发实习生<\/p>/);
-  assert.match(html, /<div class="resume-header-right"><div class="resume-highlight-list"><span>本科在读<\/span><span>3 年项目经验<\/span><\/div><\/div>/);
- assert.match(html, /<div class="resume-contact-list">/);
+  assert.match(html, /<div class="resume-photo-block"><img class="resume-photo" src="dist\/photo\.jpg" alt="张同学"><\/div>/);
+  assert.match(html, /<div class="resume-contact-list">/);
+  assert.match(html, /<div class="resume-highlight-list"><span>本科在读<\/span><span>3 年项目经验<\/span><\/div>/);
   assert.match(html, /<a class="resume-contact-item" href="tel:138%200000%200000"/);
   assert.match(html, /<a class="resume-contact-item" href="mailto:resume@example.com"/);
   assert.match(html, /<span class="resume-contact-item">/);
@@ -37,21 +40,17 @@ test('renders a semantic resume header, basic information section, and body', ()
   assert.match(html, />resume@example\.com<\/span><\/a>/);
   assert.match(html, />上海<\/span><\/span>/);
   assert.match(html, />github\.com\/example<\/span><\/a>/);
-  assert.match(html, /<section class="resume-section resume-basic-info"/);
-  assert.match(html, /<h2 id="resume-basic-info-title">基本信息<\/h2>/);
-  assert.doesNotMatch(html, /<span class="basic-info-label">电话<\/span>/);
-  assert.doesNotMatch(html, /<span class="basic-info-label">邮箱<\/span>/);
-  assert.doesNotMatch(html, /<span class="basic-info-label">所在地<\/span>/);
-  assert.doesNotMatch(html, /<span class="basic-info-label">个人主页<\/span>/);
-  assert.match(html, /<span class="basic-info-label">最高学历<\/span>/);
-  assert.match(html, /<span class="basic-info-label">相关经验<\/span>/);
+  assert.match(html, />最高学历：本科在读<\/span><\/span>/);
+  assert.match(html, />相关经验：3 年项目经验<\/span><\/span>/);
+  assert.doesNotMatch(html, /resume-header-right/);
+  assert.doesNotMatch(html, /resume-basic-info/);
+  assert.doesNotMatch(html, /basic-info-/);
   assert.match(html, /href="tel:138%200000%200000"/);
   assert.match(html, /href="mailto:resume@example.com"/);
   assert.match(html, /href="https:\/\/github.com\/example"/);
   assert.equal((html.match(/>resume@example\.com</g) || []).length, 1);
   assert.equal((html.match(/>138 0000 0000</g) || []).length, 1);
   assert.equal((html.match(/>github\.com\/example</g) || []).length, 1);
-  assert.doesNotMatch(html, /<span class="basic-info-value">上海<\/span>/);
   assert.match(html, /<main class="resume-body">/);
   assert.match(html, /<h2>教育背景<\/h2>/);
 });
@@ -67,7 +66,7 @@ test('omits empty profile fields instead of rendering placeholders', () => {
   assert.doesNotMatch(html, /basic-info-item/);
 });
 
-test('renders optional basic information fields only when supplied', () => {
+test('renders optional profile fields inline only when supplied', () => {
   const html = buildResumeHTML(
     {
       name: 'DC',
@@ -77,10 +76,9 @@ test('renders optional basic information fields only when supplied', () => {
     ''
   );
 
-  assert.match(html, /<span class="basic-info-label">性别<\/span>/);
-  assert.match(html, /<span class="basic-info-value">男<\/span>/);
-  assert.match(html, /<span class="basic-info-label">年龄<\/span>/);
-  assert.match(html, /<span class="basic-info-value">20<\/span>/);
+  assert.match(html, /<span class="resume-contact-item"><span>性别：男<\/span><\/span>/);
+  assert.match(html, /<span class="resume-contact-item"><span>年龄：20<\/span><\/span>/);
+  assert.doesNotMatch(html, /basic-info-/);
   assert.doesNotMatch(html, />电话<\/span>/);
 });
 
@@ -105,6 +103,30 @@ test('rejects unsafe website schemes', () => {
 
   assert.doesNotMatch(html, /javascript:/i);
   assert.doesNotMatch(html, /resume-contact-item/);
+});
+
+test('renders only safe local photo paths', () => {
+  const safeHTML = buildResumeHTML({ name: 'DC', photo: './dist/photo.webp' }, '');
+  const unsafeHTML = buildResumeHTML({ name: 'DC', photo: 'javascript:alert(1)' }, '');
+  const remoteHTML = buildResumeHTML({ name: 'DC', photo: 'https://example.com/photo.jpg' }, '');
+
+  assert.match(safeHTML, /<img class="resume-photo" src="\.\/dist\/photo\.webp" alt="DC">/);
+  assert.doesNotMatch(unsafeHTML, /resume-photo/);
+  assert.doesNotMatch(unsafeHTML, /javascript:/i);
+  assert.doesNotMatch(remoteHTML, /resume-photo/);
+});
+
+test('normalizes safe photo paths and rejects unsafe or non-image paths', () => {
+  assert.equal(normalizePhotoURL('dist/photo.jpg'), 'dist/photo.jpg');
+  assert.equal(normalizePhotoURL('./photo.png'), './photo.png');
+  assert.equal(normalizePhotoURL('../assets/photo.webp'), '../assets/photo.webp');
+  assert.equal(normalizePhotoURL('/images/photo.jpeg'), '/images/photo.jpeg');
+  assert.equal(normalizePhotoURL('javascript:alert(1)'), null);
+  assert.equal(normalizePhotoURL('data:image/png;base64,abc'), null);
+  assert.equal(normalizePhotoURL('file:///C:/photo.jpg'), null);
+  assert.equal(normalizePhotoURL('//example.com/photo.jpg'), null);
+  assert.equal(normalizePhotoURL('dist/photo.svg'), null);
+  assert.equal(normalizePhotoURL('dist/resume.pdf'), null);
 });
 
 test('normalizes web addresses while preserving explicit HTTP or HTTPS', () => {

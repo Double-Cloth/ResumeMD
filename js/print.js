@@ -67,6 +67,16 @@
     }).filter(Boolean);
   }
 
+  function hasPaginatedPaper(resumeHTML) {
+    return /\bclass=(["'])[^"']*\bresume-paper\b/i.test(resumeHTML);
+  }
+
+  function buildResumeDocumentHTML(resumeHTML) {
+    return hasPaginatedPaper(resumeHTML)
+      ? '<main class="resume-document">' + resumeHTML + '</main>'
+      : '<main class="resume-document"><article class="resume-paper">' + resumeHTML + '</article></main>';
+  }
+
   function buildPrintDocument(options) {
     const settings = options || {};
     const title = makePrintTitle(settings.title);
@@ -90,7 +100,7 @@
       + '<style>' + styles + '</style>'
       + '</head>'
       + '<body>'
-      + '<article class="resume-paper">' + resumeHTML + '</article>'
+      + buildResumeDocumentHTML(resumeHTML)
       + '</body>'
       + '</html>';
   }
