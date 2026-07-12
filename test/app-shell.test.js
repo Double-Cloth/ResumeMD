@@ -96,6 +96,13 @@ test('dark preview select keeps native dropdown options readable', () => {
   assert.match(css, /\.compact-select-dark\s+option\s*\{[\s\S]*?color:\s*#172033/);
 });
 
+test('print stylesheet removes the preview-only gap between A4 pages', () => {
+  const printCSS = read('css/print.css');
+  const followingPaper = cssBlock(printCSS, '.resume-paper + .resume-paper');
+
+  assert.match(followingPaper, /margin-top:\s*0/);
+});
+
 test('preview is a paginated resume document instead of one continuous paper', () => {
   const html = read('index.html');
   const css = read('css/resume.css');

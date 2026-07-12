@@ -65,6 +65,10 @@ body {
   -webkit-print-color-adjust: exact;
 }
 
+.resume-paper + .resume-paper {
+  margin-top: 0;
+}
+
 .resume-paper:last-child {
   break-after: auto;
   page-break-after: auto;
