@@ -60,6 +60,6 @@ test('collects readable CSS rules from selected stylesheets only', () => {
 });
 
 test('creates a useful default PDF filename title', () => {
-  assert.equal(makePrintTitle(' 陈同学 '), '陈同学-简历');
+  assert.equal(makePrintTitle(' 童同学 '), '童同学-简历');
   assert.equal(makePrintTitle(''), '简历');
 });

@@ -10,12 +10,12 @@ const {
 test('counts characters, words, sections, and pages from resume source', () => {
   const source = [
     '---',
-    'name: 陈同学',
+    'name: 童同学',
     '---',
     '',
     '## 教育背景',
     '',
-    '- GPA 3.8',
+    '- GPA 4.7',
     '',
     '## 项目经历',
     '',
