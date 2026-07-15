@@ -21,6 +21,8 @@ test('index provides the editor, preview, toolbar actions, and embedded example'
   assert.match(html, /id="markdown-editor"/);
   assert.match(html, /id="resume-preview"/);
   assert.match(html, /id="import-button"/);
+  assert.match(html, /id="photo-button"/);
+  assert.match(html, /id="photo-input"/);
   assert.match(html, /id="export-button"/);
   assert.match(html, /id="print-button"/);
   assert.match(html, /id="snippet-select"/);
@@ -120,6 +122,8 @@ test('app runtime guards localStorage, counts Unicode characters, and refreshes 
   assert.match(app, /function getStorageBackend\(\)/);
   assert.match(app, /api\.createStorage\(getStorageBackend\(\), 'resumemd\.source\.v1'\)/);
   assert.match(app, /api\.makeResumeStats\(source, pages\.length\)/);
+  assert.match(app, /api\.readImageFile\(file\)/);
+  assert.match(app, /setFrontMatterField\(editor\.value, 'photo', dataURL\)/);
   assert.match(app, /loaded\.value !== null/);
   assert.match(app, /renderDocument\(\);\s*const frontMatter = api\.parseFrontMatter\(editor\.value\);/);
 });

@@ -59,6 +59,10 @@
             <h1 id="editor-title">Markdown 编辑器</h1>
           </div>
           <div class="editor-tools">
+            <button class="photo-upload-button" id="photo-button" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="m4 16 4.5-4.5 3.5 3.5 2-2 6 6"/><circle cx="15.5" cy="9.5" r="1.5"/></svg>
+              <span>上传照片</span>
+            </button>
             <label class="visually-hidden" for="snippet-select">插入简历模板</label>
             <select class="compact-select" id="snippet-select" aria-label="插入简历模板">
               <option value="">插入模板</option>
@@ -112,6 +116,7 @@
   </div>
 
   <input id="file-input" type="file" accept=".md,.markdown,.txt,text/markdown,text/plain" hidden>
+  <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif" hidden>
 
   <script id="example-source" type="text/plain">---
 name: 童同学

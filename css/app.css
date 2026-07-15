@@ -277,6 +277,44 @@ select:focus-visible {
   flex-wrap: wrap;
 }
 
+.photo-upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgb(15 191 159 / 18%);
+  transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.photo-upload-button:hover {
+  border-color: var(--accent-strong);
+  background: var(--accent-strong);
+}
+
+.photo-upload-button:active {
+  transform: translateY(1px);
+}
+
+.photo-upload-button svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .compact-select {
   max-width: 132px;
   height: 32px;
@@ -573,6 +611,12 @@ select:focus-visible {
   .editor-tools {
     align-items: flex-end;
     gap: 6px;
+  }
+
+  .photo-upload-button {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 11px;
   }
 
   .compact-select {

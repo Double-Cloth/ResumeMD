@@ -12,6 +12,7 @@
   const snippetSelect = document.getElementById('snippet-select');
   const zoomSelect = document.getElementById('zoom-select');
   const fileInput = document.getElementById('file-input');
+  const photoInput = document.getElementById('photo-input');
   const workspace = document.querySelector('.workspace');
   const editorTab = document.getElementById('editor-tab');
   const previewTab = document.getElementById('preview-tab');
@@ -234,6 +235,56 @@
     setStatus('Markdown 已导出', 'saved', true);
   }
 
+  function setFrontMatterField(source, key, value) {
+    const normalized = String(source == null ? '' : source).replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
+    const lines = normalized.split('\n');
+    const field = String(key || '').trim();
+    const nextLine = field + ': ' + String(value == null ? '' : value);
+
+    if (!field) {
+      return normalized;
+    }
+
+    if (lines[0] !== '---') {
+      return ['---', nextLine, '---', '', normalized.replace(/^\n+/, '')].join('\n');
+    }
+
+    const closingIndex = lines.findIndex(function (line, index) {
+      return index > 0 && line === '---';
+    });
+
+    if (closingIndex === -1) {
+      return ['---', nextLine, '---', '', normalized].join('\n');
+    }
+
+    const fieldPattern = new RegExp('^\\s*' + field.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*:');
+    for (let index = 1; index < closingIndex; index += 1) {
+      if (fieldPattern.test(lines[index])) {
+        lines[index] = nextLine;
+        return lines.join('\n');
+      }
+    }
+
+    lines.splice(closingIndex, 0, nextLine);
+    return lines.join('\n');
+  }
+
+  function applyUploadedPhoto(file) {
+    setStatus('正在读取照片…', 'saving');
+    api.readImageFile(file)
+      .then(function (dataURL) {
+        editor.value = setFrontMatterField(editor.value, 'photo', dataURL);
+        renderDocument();
+        setStatus('已上传照片 ' + file.name, 'saved', true);
+      })
+      .catch(function (error) {
+        setStatus(error.message || '照片上传失败', 'error');
+      })
+      .finally(function () {
+        photoInput.value = '';
+      });
+  }
+
   function setMobileView(view) {
     const isEditor = view === 'editor';
     workspace.dataset.mobileView = isEditor ? 'editor' : 'preview';
@@ -265,6 +316,19 @@
       .finally(function () {
         fileInput.value = '';
       });
+  });
+
+  document.getElementById('photo-button').addEventListener('click', function () {
+    photoInput.click();
+  });
+
+  photoInput.addEventListener('change', function () {
+    const file = photoInput.files && photoInput.files[0];
+    if (!file) {
+      return;
+    }
+
+    applyUploadedPhoto(file);
   });
 
   document.getElementById('export-button').addEventListener('click', exportSource);

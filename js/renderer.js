@@ -55,6 +55,10 @@
       return null;
     }
 
+    if (/^data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+/]+={0,2}$/i.test(raw)) {
+      return raw;
+    }
+
     if (/^[A-Za-z][A-Za-z0-9+.-]*:/.test(raw)) {
       return null;
     }

@@ -117,12 +117,15 @@ test('renders only safe local photo paths', () => {
 });
 
 test('normalizes safe photo paths and rejects unsafe or non-image paths', () => {
+  const dataURL = 'data:image/png;base64,iVBORw0KGgo=';
   assert.equal(normalizePhotoURL('dist/photo.jpg'), 'dist/photo.jpg');
   assert.equal(normalizePhotoURL('./photo.png'), './photo.png');
   assert.equal(normalizePhotoURL('../assets/photo.webp'), '../assets/photo.webp');
   assert.equal(normalizePhotoURL('/images/photo.jpeg'), '/images/photo.jpeg');
+  assert.equal(normalizePhotoURL(dataURL), dataURL);
   assert.equal(normalizePhotoURL('javascript:alert(1)'), null);
-  assert.equal(normalizePhotoURL('data:image/png;base64,abc'), null);
+  assert.equal(normalizePhotoURL('data:image/svg+xml;base64,PHN2Zy8+'), null);
+  assert.equal(normalizePhotoURL('data:text/html;base64,PGgxPjE8L2gxPg=='), null);
   assert.equal(normalizePhotoURL('file:///C:/photo.jpg'), null);
   assert.equal(normalizePhotoURL('//example.com/photo.jpg'), null);
   assert.equal(normalizePhotoURL('dist/photo.svg'), null);
