@@ -121,9 +121,12 @@ test('app runtime guards localStorage, counts Unicode characters, and refreshes 
 
   assert.match(app, /function getStorageBackend\(\)/);
   assert.match(app, /api\.createStorage\(getStorageBackend\(\), 'resumemd\.source\.v1'\)/);
+  assert.match(app, /api\.createStorage\(getStorageBackend\(\), 'resumemd\.photo\.v1'\)/);
   assert.match(app, /api\.makeResumeStats\(source, pages\.length\)/);
   assert.match(app, /api\.readImageFile\(file\)/);
-  assert.match(app, /setFrontMatterField\(editor\.value, 'photo', dataURL\)/);
+  assert.match(app, /setFrontMatterField\(editor\.value, 'photo', photoReference\)/);
+  assert.match(app, /function migrateInlinePhoto\(source\)/);
+  assert.doesNotMatch(app, /getElementsByClassName\('resume-contact-item'\)\[0\]/);
   assert.match(app, /loaded\.value !== null/);
   assert.match(app, /renderDocument\(\);\s*const frontMatter = api\.parseFrontMatter\(editor\.value\);/);
 });

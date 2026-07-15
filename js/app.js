@@ -18,8 +18,11 @@
   const previewTab = document.getElementById('preview-tab');
   const exampleSource = document.getElementById('example-source').textContent.trim();
   const storage = api.createStorage(getStorageBackend(), 'resumemd.source.v1');
+  const photoStorage = api.createStorage(getStorageBackend(), 'resumemd.photo.v1');
+  const photoReference = 'resumemd-photo';
   let renderTimer = null;
   let statusTimer = null;
+  let uploadedPhotoDataURL = null;
 
   function getStorageBackend() {
     try {
@@ -152,7 +155,7 @@
       }, 0);
 
       if (maxWidth > 0) {
-        header.style.setProperty('--resume-header-rule-width', (1.75 * document.getElementsByClassName('resume-contact-item')[0].offsetWidth) + 'px');
+        header.style.setProperty('--resume-header-rule-width', maxWidth + 'px');
       } else {
         header.style.removeProperty('--resume-header-rule-width');
       }
@@ -167,10 +170,11 @@
 
     const source = editor.value;
     const frontMatter = api.parseFrontMatter(source);
+    const profile = resolveProfilePhoto(frontMatter.data);
     const blocks = api.parseMarkdown(frontMatter.body);
     const bodyHTML = api.renderBlocks(blocks);
 
-    const resumeHTML = api.buildResumeHTML(frontMatter.data, bodyHTML);
+    const resumeHTML = api.buildResumeHTML(profile, bodyHTML);
     let pages = [];
     if (typeof api.paginateResume === 'function') {
       pages = api.paginateResume(preview, resumeHTML);
@@ -235,6 +239,30 @@
     setStatus('Markdown 已导出', 'saved', true);
   }
 
+  function isPhotoDataURL(value) {
+    return /^data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+/]+={0,2}$/i.test(String(value || '').trim());
+  }
+
+  function resolveProfilePhoto(profile) {
+    const data = Object.assign({}, profile || {});
+    const rawPhoto = String(data.photo || '').trim();
+
+    if (rawPhoto === photoReference) {
+      if (uploadedPhotoDataURL) {
+        data.photo = uploadedPhotoDataURL;
+        return data;
+      }
+
+      const loadedPhoto = photoStorage.load();
+      if (loadedPhoto.ok && isPhotoDataURL(loadedPhoto.value)) {
+        uploadedPhotoDataURL = loadedPhoto.value;
+        data.photo = loadedPhoto.value;
+      }
+    }
+
+    return data;
+  }
+
   function setFrontMatterField(source, key, value) {
     const normalized = String(source == null ? '' : source).replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
     const lines = normalized.split('\n');
@@ -269,13 +297,26 @@
     return lines.join('\n');
   }
 
+  function migrateInlinePhoto(source) {
+    const frontMatter = api.parseFrontMatter(source);
+    if (!isPhotoDataURL(frontMatter.data.photo)) {
+      return source;
+    }
+
+    uploadedPhotoDataURL = frontMatter.data.photo.trim();
+    photoStorage.save(uploadedPhotoDataURL);
+    return setFrontMatterField(source, 'photo', photoReference);
+  }
+
   function applyUploadedPhoto(file) {
     setStatus('正在读取照片…', 'saving');
     api.readImageFile(file)
       .then(function (dataURL) {
-        editor.value = setFrontMatterField(editor.value, 'photo', dataURL);
+        uploadedPhotoDataURL = dataURL;
+        const saveResult = photoStorage.save(dataURL);
+        editor.value = setFrontMatterField(editor.value, 'photo', photoReference);
         renderDocument();
-        setStatus('已上传照片 ' + file.name, 'saved', true);
+        setStatus(saveResult.ok ? '已上传照片 ' + file.name : '照片已应用，本地照片保存不可用', saveResult.ok ? 'saved' : 'error', saveResult.ok);
       })
       .catch(function (error) {
         setStatus(error.message || '照片上传失败', 'error');
@@ -385,7 +426,7 @@
   });
 
   const loaded = storage.load();
-  editor.value = loaded.ok && loaded.value !== null ? loaded.value : exampleSource;
+  editor.value = migrateInlinePhoto(loaded.ok && loaded.value !== null ? loaded.value : exampleSource);
   if (!loaded.ok) {
     setStatus('本地保存不可用', 'error');
   }
