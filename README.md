@@ -79,7 +79,7 @@ city: 上海
 
 ## 头像
 
-`photo` 只支持本地或相对图片路径，扩展名限 `.jpg`、`.jpeg`、`.png`、`.webp`、`.gif`。
+`photo` 扩展名限 `.jpg`、`.jpeg`、`.png`、`.webp`、`.gif`。
 
 推荐做法：
 
@@ -90,7 +90,6 @@ photo: dist/photo.jpg
 限制说明：
 
 - 不加载远程 URL，例如 `https://example.com/photo.jpg`。
-- 不允许 `data:`、`file:`、`javascript:` 或协议相对路径。
 - 不支持 `.svg` 作为头像，避免脚本或外部资源风险。
 - 图片建议使用证件照比例，示例头像文件位于 `dist/photo.jpg`。
 
