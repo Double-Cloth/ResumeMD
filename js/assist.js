@@ -20,6 +20,9 @@
       'website: github.com/username',
       'education: 本科',
       'experience: 2 年项目经验',
+      'availability: 可协商',
+      'work_mode: 现场 / 远程均可',
+      'photo: examples/example.png',
       '---',
     ].join('\n'),
     education: [

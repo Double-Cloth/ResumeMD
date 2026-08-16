@@ -54,7 +54,9 @@ location: 所在城市
 website: example.com
 education: 本科
 experience: 3 年相关经验
-photo:
+availability: 可协商
+work_mode: 现场 / 远程均可
+photo: examples/example.png
 birth:
 political:
 city:
@@ -75,6 +77,8 @@ city:
 | `website` | 个人网站、GitHub 或作品集地址 |
 | `education` | 最高学历，例如“本科在读” |
 | `experience` | 相关经验，例如“2 年项目经验” |
+| `availability` | 到岗时间，例如“可协商” |
+| `work_mode` | 工作方式，例如“现场 / 远程均可” |
 | `photo` | 头像路径，可选，例如 `examples/example.png` |
 | `gender` | 性别，可选 |
 | `age` | 年龄，可选 |
@@ -82,7 +86,7 @@ city:
 | `political` | 政治面貌，例如“群众” |
 | `city` | 所在城市，例如“所在城市” |
 
-简历页眉按信息层级自动整理：电话、邮箱、所在地和个人主页归入“联系方式”，`education` 与 `experience` 归入“核心资历”，性别、年龄、出生年月、政治面貌及其他字段归入“补充信息”。`location` 与 `city` 同值时会自动去重；未填写的分组和照片区域不会占用空间。
+简历页眉按信息层级自动整理：电话、邮箱、所在地和个人主页归入“联系方式”，`education` 与 `experience` 归入“核心资历”，`availability`、`work_mode` 及其他可选字段归入“补充信息”。`location` 与 `city` 同值时会自动去重；未填写的分组和照片区域不会占用空间。
 
 ## 头像
 

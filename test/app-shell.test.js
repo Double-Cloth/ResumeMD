@@ -75,7 +75,8 @@ test('embedded and downloadable examples stay synchronized and contain only gene
   assert.equal(embeddedMatch[1].trim(), standalone);
   assert.match(standalone, /^---\nname: 示例用户\ntitle: 软件开发工程师/m);
   assert.match(standalone, /以下经历均为虚构占位内容/);
-  assert.doesNotMatch(standalone, /^photo:/m);
+  assert.match(standalone, /^availability: 可协商\nwork_mode: 现场 \/ 远程均可\nphoto: examples\/example\.png$/m);
+  assert.ok(fs.existsSync(path.join(root, 'examples/example.png')));
   assert.doesNotMatch(publicExamples, /^gender:[ \t]*\S+/m);
   assert.doesNotMatch(publicExamples, /^birth:[ \t]*\d{4}/m);
   assert.doesNotMatch(publicExamples, /^political:[ \t]*\S+/m);
@@ -120,7 +121,8 @@ test('syntax help documents project-specific Markdown rules in an accessible dia
 
   assert.match(html, /<h2 id="syntax-help-title">ResumeMD 语法说明<\/h2>/);
   assert.match(html, /个人信息：Front Matter/);
-  assert.match(html, /name: 示例用户[\s\S]*gender:\s*\nage:\s*\nbirth:\s*\npolitical:\s*\ncity:\s*\nphoto:/);
+  assert.match(html, /name: 示例用户[\s\S]*availability: 可协商\nwork_mode: 现场 \/ 远程均可/);
+  assert.match(html, /gender:\s*\nage:\s*\nbirth:\s*\npolitical:\s*\ncity:\s*\nphoto: examples\/example\.png/);
   assert.match(html, /以下均为虚构占位内容/);
   assert.match(html, /<code>##<\/code> 创建简历章节，<code>###<\/code> 创建章节中的经历条目/);
   assert.match(html, /全角 <code>｜<\/code> 会将主体与说明分层显示/);

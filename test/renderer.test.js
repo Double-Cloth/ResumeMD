@@ -25,6 +25,8 @@ test('renders a semantic resume header with contacts, qualifications, details, p
       birth: '2000.01',
       political: '群众',
       city: '上海',
+      availability: '可协商',
+      work_mode: '现场 / 远程均可',
     },
     '<section class="resume-section"><h2>教育背景</h2></section>'
   );
@@ -52,6 +54,8 @@ test('renders a semantic resume header with contacts, qualifications, details, p
   assert.match(html, /aria-label="年龄：21">21 岁<\/span>/);
   assert.match(html, /aria-label="出生日期：2000\.01">2000\.01<\/span>/);
   assert.match(html, /aria-label="政治面貌：群众">群众<\/span>/);
+  assert.match(html, /aria-label="到岗时间：可协商">到岗时间 可协商<\/span>/);
+  assert.match(html, /aria-label="工作方式：现场 \/ 远程均可">工作方式 现场 \/ 远程均可<\/span>/);
   assert.doesNotMatch(html, /aria-label="所在城市：上海"/);
   assert.doesNotMatch(html, /resume-header-right/);
   assert.doesNotMatch(html, /resume-basic-info/);

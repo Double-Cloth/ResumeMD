@@ -137,6 +137,8 @@
       birth: '出生日期',
       political: '政治面貌',
       city: '所在城市',
+      availability: '到岗时间',
+      work_mode: '工作方式',
     };
 
     const phone = clean(data.phone);
@@ -194,6 +196,24 @@
       details.push(buildDetailItem(fieldLabels.city, city));
     }
 
+    const availability = clean(data.availability);
+    if (availability) {
+      details.push(buildDetailItem(
+        fieldLabels.availability,
+        availability,
+        fieldLabels.availability + ' ' + availability
+      ));
+    }
+
+    const workMode = clean(data.work_mode);
+    if (workMode) {
+      details.push(buildDetailItem(
+        fieldLabels.work_mode,
+        workMode,
+        fieldLabels.work_mode + ' ' + workMode
+      ));
+    }
+
     const knownKeys = {
       name: true,
       title: true,
@@ -209,6 +229,8 @@
       birth: true,
       political: true,
       city: true,
+      availability: true,
+      work_mode: true,
     };
     Object.keys(data).forEach(function (key) {
       const value = clean(data[key]);

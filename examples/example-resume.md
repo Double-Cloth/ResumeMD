@@ -7,6 +7,9 @@ location: 所在城市
 website: https://example.com
 education: 本科
 experience: 3 年相关经验
+availability: 可协商
+work_mode: 现场 / 远程均可
+photo: examples/example.png
 ---
 
 ## 个人概述

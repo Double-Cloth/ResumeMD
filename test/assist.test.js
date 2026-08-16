@@ -32,6 +32,7 @@ test('counts characters, words, sections, and pages from resume source', () => {
 
 test('returns practical markdown snippet templates', () => {
   assert.match(getSnippetTemplate('profile'), /^---\nname: /);
+  assert.match(getSnippetTemplate('profile'), /availability: 可协商[\s\S]*photo: examples\/example\.png/);
   assert.match(getSnippetTemplate('education'), /## 教育背景/);
   assert.match(getSnippetTemplate('experience'), /### 公司名称｜岗位名称/);
   assert.match(getSnippetTemplate('project'), /## 项目经历/);

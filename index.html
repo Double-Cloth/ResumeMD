@@ -142,7 +142,7 @@
       <div class="syntax-dialog-content">
         <section class="syntax-guide-section syntax-guide-section-wide">
           <h3>个人信息：Front Matter</h3>
-          <p>个人信息必须写在文档开头，并用两行 <code>---</code> 包裹。以下均为虚构占位内容，空字段会自动隐藏。</p>
+          <p>个人信息必须写在文档开头，并用两行 <code>---</code> 包裹。以下均为虚构占位内容；默认照片是非真人插画，删除或留空字段即可隐藏。</p>
           <pre><code>---
 name: 示例用户
 title: 软件开发工程师
@@ -152,12 +152,14 @@ location: 所在城市
 website: https://example.com
 education: 本科
 experience: 3 年相关经验
+availability: 可协商
+work_mode: 现场 / 远程均可
 gender:
 age:
 birth:
 political:
 city:
-photo:
+photo: examples/example.png
 ---</code></pre>
         </section>
 
@@ -209,6 +211,9 @@ location: 所在城市
 website: https://example.com
 education: 本科
 experience: 3 年相关经验
+availability: 可协商
+work_mode: 现场 / 远程均可
+photo: examples/example.png
 ---
 
 ## 个人概述
