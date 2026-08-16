@@ -44,6 +44,7 @@ test('index provides the editor, preview, toolbar actions, and embedded example'
   assert.match(html, /id="undo-button"/);
   assert.match(html, /id="resume-stats"/);
   assert.match(html, /id="zoom-select"/);
+  assert.match(html, /<option value="fit">适应宽度<\/option>/);
   assert.match(html, /id="page-count"/);
   assert.match(html, /id="editor-tab"[^>]+role="tab"[^>]+tabindex="0"/);
   assert.match(html, /id="preview-tab"[^>]+role="tab"[^>]+tabindex="-1"/);
@@ -198,6 +199,18 @@ test('responsive toolbar stays on one row and switches tablets to focused panes'
   assert.match(css, /\.toolbar\s*{[\s\S]*?flex-wrap:\s*nowrap/);
   assert.match(css, /\.toolbar-button-primary\s*{[\s\S]*?flex:\s*0 0 auto/);
   assert.match(css, /@media \(max-width: 360px\)[\s\S]*?\.brand-copy\s*{[\s\S]*?display:\s*none/);
+});
+
+test('mobile preview defaults to a responsive fit-width zoom', () => {
+  const app = read('js/app.js');
+  const css = read('css/app.css');
+
+  assert.match(app, /value === 'fit'/);
+  assert.match(app, /availableWidth \/ pageWidth/);
+  assert.match(app, /matchMedia\('\(max-width: 1080px\)'\)[\s\S]*zoomSelect\.value = 'fit'/);
+  assert.match(app, /function setMobileView[\s\S]*!isEditor && zoomSelect\.value === 'fit'[\s\S]*setPreviewZoom\('fit'\)/);
+  assert.match(app, /window\.addEventListener\('resize'/);
+  assert.match(css, /\.resume-document\.is-fit-width\s*{[\s\S]*?zoom:\s*var\(--preview-scale/);
 });
 
 test('resume styles no longer include removed basic-info or old header-right layout selectors', () => {

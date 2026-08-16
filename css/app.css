@@ -515,6 +515,11 @@ select:focus-visible {
   transform-origin: top center;
 }
 
+.preview-scroll .resume-document.is-fit-width {
+  zoom: var(--preview-scale, 1);
+  transform: none;
+}
+
 .preview-scroll::-webkit-scrollbar {
   width: 12px;
   height: 12px;

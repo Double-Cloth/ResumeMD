@@ -11,6 +11,7 @@
   const pageCount = document.getElementById('page-count');
   const snippetSelect = document.getElementById('snippet-select');
   const zoomSelect = document.getElementById('zoom-select');
+  const previewScroll = document.querySelector('.preview-scroll');
   const fileInput = document.getElementById('file-input');
   const photoInput = document.getElementById('photo-input');
   const workspace = document.querySelector('.workspace');
@@ -81,7 +82,19 @@
   }
 
   function setPreviewZoom(value) {
-    const zoom = Number(value) || 1;
+    const fitWidth = value === 'fit';
+    let zoom = Number(value) || 1;
+
+    if (fitWidth) {
+      const page = preview.querySelector('.resume-paper');
+      const styles = window.getComputedStyle(previewScroll);
+      const horizontalPadding = parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight);
+      const availableWidth = Math.max(1, previewScroll.clientWidth - horizontalPadding);
+      const pageWidth = page && page.offsetWidth ? page.offsetWidth : 794;
+      zoom = Math.min(1, Math.max(0.35, availableWidth / pageWidth));
+    }
+
+    preview.classList.toggle('is-fit-width', fitWidth);
     preview.style.setProperty('--preview-scale', String(zoom));
   }
 
@@ -191,6 +204,9 @@
     } else {
       preview.innerHTML = '<article class="resume-paper">' + resumeHTML + '</article>';
       pages = Array.from(preview.querySelectorAll('.resume-paper'));
+    }
+    if (zoomSelect.value === 'fit') {
+      setPreviewZoom('fit');
     }
     syncHeaderRuleWidths(pages);
     updateErrors(frontMatter.errors);
@@ -336,6 +352,10 @@
     editorTab.tabIndex = isEditor ? 0 : -1;
     previewTab.tabIndex = isEditor ? -1 : 0;
 
+    if (!isEditor && zoomSelect.value === 'fit') {
+      setPreviewZoom('fit');
+    }
+
     if (moveFocus) {
       (isEditor ? editorTab : previewTab).focus();
     }
@@ -401,6 +421,12 @@
 
   zoomSelect.addEventListener('change', function () {
     setPreviewZoom(zoomSelect.value);
+  });
+
+  window.addEventListener('resize', function () {
+    if (zoomSelect.value === 'fit') {
+      setPreviewZoom('fit');
+    }
   });
 
   document.getElementById('print-button').addEventListener('click', function () {
@@ -469,6 +495,9 @@
   editor.value = migrateInlinePhoto(loaded.ok && loaded.value !== null ? loaded.value : exampleSource);
   if (!loaded.ok) {
     setStatus('本地保存不可用', 'error');
+  }
+  if (window.matchMedia('(max-width: 1080px)').matches) {
+    zoomSelect.value = 'fit';
   }
   setPreviewZoom(zoomSelect.value);
   renderDocument();
