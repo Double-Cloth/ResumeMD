@@ -221,4 +221,4 @@ markdown-resume/
 npm test
 ```
 
-测试覆盖 Front Matter、Markdown 安全渲染、简历页眉、头像路径白名单、辅助模板、统计、分页打印、文件校验、本地存储和静态应用结构。
+测试覆盖 Front Matter、Markdown 安全渲染、简历页眉、头像路径白名单、辅助模板、统计、分页打印、文件校验、本地存储和静态应用结构。GitHub Actions 会在 Pull Request 和 `main` 分支推送时使用 Node.js 20、22、24 运行测试；只有 `main` 推送或手动触发才会部署 GitHub Pages。

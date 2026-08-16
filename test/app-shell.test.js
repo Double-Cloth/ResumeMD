@@ -204,3 +204,16 @@ test('bundled photo references resolve to existing local files', () => {
     });
   });
 });
+
+test('deployment workflow tests pull requests across supported Node versions with scoped permissions', () => {
+  const workflow = read('.github/workflows/deploy-pages.yml');
+
+  assert.match(workflow, /pull_request:\s*\n\s*branches:\s*\n\s*- main/);
+  assert.match(workflow, /node-version:\s*\[20, 22, 24\]/);
+  assert.match(workflow, /if: github\.event_name == 'push' \|\| github\.event_name == 'workflow_dispatch'/);
+  assert.match(workflow, /deploy:[\s\S]*?permissions:[\s\S]*?pages: write[\s\S]*?id-token: write/);
+  assert.match(workflow, /deploy:[\s\S]*?concurrency:[\s\S]*?group: github-pages/);
+
+  const topLevelPermissions = workflow.slice(workflow.indexOf('permissions:'), workflow.indexOf('jobs:'));
+  assert.doesNotMatch(topLevelPermissions, /pages: write|id-token: write/);
+});
