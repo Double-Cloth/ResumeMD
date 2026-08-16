@@ -224,7 +224,19 @@ test('responsive toolbar stays on one row and switches tablets to focused panes'
   assert.match(css, /@media \(max-width: 1080px\)/);
   assert.match(css, /\.toolbar\s*{[\s\S]*?flex-wrap:\s*nowrap/);
   assert.match(css, /\.toolbar-button-primary\s*{[\s\S]*?flex:\s*0 0 auto/);
+  assert.match(css, /height:\s*calc\(100dvh - 102px\)/);
+  assert.doesNotMatch(css, /@media \(max-width: 1080px\)\s*{\s*body\s*{\s*overflow:\s*auto/);
   assert.match(css, /@media \(max-width: 360px\)[\s\S]*?\.brand-copy\s*{[\s\S]*?display:\s*none/);
+  assert.match(css, /@media \(max-width: 360px\)[\s\S]*?\.pane-header\s*{[\s\S]*?flex-wrap:\s*wrap/);
+  assert.match(css, /@media \(max-width: 360px\)[\s\S]*?\.editor-tools\s*{[\s\S]*?width:\s*100%[\s\S]*?flex-wrap:\s*nowrap/);
+});
+
+test('viewport and editor scrolling avoid nested horizontal overflow', () => {
+  const css = read('css/app.css');
+
+  assert.match(css, /html,\s*body\s*{[\s\S]*?min-width:\s*0/);
+  assert.match(css, /\.app-shell\s*{[\s\S]*?height:\s*100dvh/);
+  assert.match(css, /#markdown-editor,[\s\S]*?\.markdown-highlight\s*{[\s\S]*?scrollbar-gutter:\s*stable/);
 });
 
 test('mobile preview defaults to a responsive fit-width zoom', () => {
