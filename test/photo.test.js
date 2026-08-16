@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const {
+  makePortablePhotoSource,
   migrateInlinePhotoSource,
   prepareUploadedPhotoSource,
   setFrontMatterField,
@@ -74,4 +75,14 @@ test('uses the compact photo reference when upload storage succeeds', () => {
 
   assert.equal(result.persisted, true);
   assert.match(result.source, /photo: resumemd-photo/);
+});
+
+test('embeds a stored photo when creating a portable export', () => {
+  const source = '---\nname: DC\nphoto: resumemd-photo\n---\n正文';
+  const result = makePortablePhotoSource(source, dataURL, 'resumemd-photo');
+
+  assert.match(result, new RegExp('photo: ' + dataURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.doesNotMatch(result, /photo: resumemd-photo/);
+  assert.equal(makePortablePhotoSource(source, 'invalid', 'resumemd-photo'), source);
+  assert.equal(makePortablePhotoSource(source.replace('resumemd-photo', 'photo.png'), dataURL, 'resumemd-photo'), source.replace('resumemd-photo', 'photo.png'));
 });

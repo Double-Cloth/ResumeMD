@@ -109,10 +109,24 @@
     };
   }
 
+  function makePortablePhotoSource(source, dataURL, reference) {
+    const originalSource = String(source == null ? '' : source);
+    const profile = frontmatter.parseFrontMatter(originalSource).data;
+    const rawPhoto = String(profile.photo || '').trim();
+    const normalizedDataURL = String(dataURL || '').trim();
+
+    if (rawPhoto !== String(reference || '').trim() || !isPhotoDataURL(normalizedDataURL)) {
+      return originalSource;
+    }
+
+    return setFrontMatterField(originalSource, 'photo', normalizedDataURL);
+  }
+
   return {
     isPhotoDataURL: isPhotoDataURL,
     setFrontMatterField: setFrontMatterField,
     migrateInlinePhotoSource: migrateInlinePhotoSource,
     prepareUploadedPhotoSource: prepareUploadedPhotoSource,
+    makePortablePhotoSource: makePortablePhotoSource,
   };
 });

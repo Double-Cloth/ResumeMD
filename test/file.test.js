@@ -33,7 +33,7 @@ test('rejects unsupported and oversized imports', () => {
   assert.equal(svgText.ok, false);
   assert.match(svgText.error, /Markdown 或纯文本/);
   assert.equal(oversized.ok, false);
-  assert.match(oversized.error, /1 MiB/);
+  assert.match(oversized.error, /2 MiB/);
 });
 
 test('accepts supported image uploads within the size limit', () => {

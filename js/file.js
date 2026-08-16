@@ -9,7 +9,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
-  const MAX_IMPORT_BYTES = 1024 * 1024;
+  const MAX_IMPORT_BYTES = 2 * 1024 * 1024;
   const MAX_IMAGE_BYTES = 1024 * 1024;
   const IMAGE_EXTENSIONS = /\.(?:jpe?g|png|webp|gif)$/i;
   const IMAGE_TYPES = {
@@ -25,7 +25,7 @@
     }
 
     if (Number(file.size || 0) > MAX_IMPORT_BYTES) {
-      return { ok: false, error: '文件不能超过 1 MiB。' };
+      return { ok: false, error: '文件不能超过 2 MiB。' };
     }
 
     const name = String(file.name || '');
