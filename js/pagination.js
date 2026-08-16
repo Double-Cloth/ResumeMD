@@ -209,8 +209,7 @@
       let headingPlaced = false;
       let activeSection = null;
 
-      function openSection(includeHeading) {
-        const body = getBody();
+      function attachSection(body, includeHeading) {
         activeSection = ownerDocument.createElement('section');
         activeSection.className = sectionClass + (includeHeading ? '' : ' resume-section-continuation');
         body.appendChild(activeSection);
@@ -218,6 +217,19 @@
         if (includeHeading && heading) {
           activeSection.appendChild(heading.cloneNode(true));
           headingPlaced = true;
+        }
+
+        return activeSection;
+      }
+
+      function openSection(includeHeading) {
+        const body = getBody();
+        attachSection(body, includeHeading);
+
+        if (isPageOverflowing(currentPage) && activeSection.previousElementSibling) {
+          activeSection.parentNode.removeChild(activeSection);
+          addBodyPage();
+          attachSection(currentBody, includeHeading);
         }
 
         sectionStarted = true;

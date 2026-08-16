@@ -217,6 +217,7 @@ test('pagination splits oversized resume entries into continuation blocks', () =
   assert.match(pagination, /function appendEntry\(parent, entry, reopenParent\)/);
   assert.match(pagination, /child\.classList\.contains\('resume-entry'\)/);
   assert.match(pagination, /resume-entry-continuation/);
+  assert.match(pagination, /isPageOverflowing\(currentPage\) && activeSection\.previousElementSibling/);
   assert.match(css, /\.resume-entry-continuation\s*{/);
 });
 
@@ -313,6 +314,16 @@ test('resume header uses ordered identity, contact, qualification, detail, and p
   assert.match(css, /\.resume-header-has-photo \.resume-header-main\s*{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\) 24mm/);
   assert.doesNotMatch(css, /--resume-header-rule-width/);
   assert.doesNotMatch(app, /createRange\(|syncHeaderRuleWidths|measureHeaderLineWidth/);
+});
+
+test('resume typography keeps the header readable and section accents restrained', () => {
+  const css = read('css/resume.css');
+
+  assert.match(css, /\.resume-header h1\s*{[\s\S]*?font-size:\s*30px/);
+  assert.match(css, /\.resume-title\s*{[\s\S]*?font-size:\s*14px/);
+  assert.match(css, /\.resume-contact-list\s*{[\s\S]*?font-size:\s*11\.5px/);
+  assert.match(css, /\.resume-detail-list\s*{[\s\S]*?font-size:\s*11px/);
+  assert.match(css, /\.resume-section h2\s*{[\s\S]*?border-bottom:\s*1px solid #a1b8b5;[\s\S]*?color:\s*#245f5a/);
 });
 
 test('runtime files contain no external dependency or fetch call', () => {
