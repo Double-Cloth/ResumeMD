@@ -88,10 +88,20 @@ test('classic scripts load in dependency order and avoid ES modules', () => {
 test('editor grid reserves the remaining height for the textarea', () => {
   const css = read('css/app.css');
 
-  assert.match(css, /grid-template-rows:\s*auto auto minmax\(0, 1fr\) 40px/);
+  assert.match(css, /grid-template-rows:\s*auto auto minmax\(0, 1fr\) 36px/);
   assert.match(css, /\.editor-input-shell\s*\{[\s\S]*?grid-row:\s*3/);
   assert.match(css, /#markdown-editor,[\s\S]*?\.markdown-highlight\s*\{[\s\S]*?position:\s*absolute/);
   assert.match(css, /\.editor-footer\s*\{[\s\S]*?grid-row:\s*4/);
+});
+
+test('desktop chrome keeps compact fixed rows and a flat preview workspace', () => {
+  const css = read('css/app.css');
+
+  assert.match(css, /\.app-shell\s*{[\s\S]*?grid-template-rows:\s*60px minmax\(0, 1fr\)/);
+  assert.match(css, /\.pane-header,[\s\S]*?\.preview-topbar\s*{[\s\S]*?min-height:\s*64px/);
+  assert.match(css, /\.editor-footer\s*{[\s\S]*?min-height:\s*36px/);
+  assert.match(css, /\.preview-pane\s*{[\s\S]*?background:\s*var\(--workspace\)/);
+  assert.doesNotMatch(css, /radial-gradient|linear-gradient|backdrop-filter/);
 });
 
 test('editor syntax highlight mirrors content and scrolling without replacing the textarea', () => {
