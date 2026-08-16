@@ -107,10 +107,13 @@ test('classic scripts load in dependency order and avoid ES modules', () => {
 
 test('editor grid reserves the remaining height for the textarea', () => {
   const css = read('css/app.css');
+  const editorLayerRules = css.match(/#markdown-editor,\s*\.markdown-highlight\s*\{([\s\S]*?)\}/)?.[1] || '';
 
   assert.match(css, /grid-template-rows:\s*auto auto minmax\(0, 1fr\) 36px/);
   assert.match(css, /\.editor-input-shell\s*\{[\s\S]*?grid-row:\s*3/);
   assert.match(css, /#markdown-editor,[\s\S]*?\.markdown-highlight\s*\{[\s\S]*?position:\s*absolute/);
+  assert.match(editorLayerRules, /height:\s*100%/);
+  assert.doesNotMatch(editorLayerRules, /100dvh/);
   assert.match(css, /\.editor-footer\s*\{[\s\S]*?grid-row:\s*4/);
 });
 
