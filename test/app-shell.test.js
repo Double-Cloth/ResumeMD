@@ -84,6 +84,7 @@ test('embedded and downloadable examples stay synchronized and contain only gene
 
 test('classic scripts load in dependency order and avoid ES modules', () => {
   const html = read('index.html');
+  const version = JSON.parse(read('package.json')).version;
   const expectedOrder = [
     'js/frontmatter.js',
     'js/markdown.js',
@@ -98,11 +99,20 @@ test('classic scripts load in dependency order and avoid ES modules', () => {
     'js/pagination.js',
     'js/app.js',
   ];
-  const positions = expectedOrder.map((source) => html.indexOf('src="' + source + '"'));
+  const positions = expectedOrder.map((source) => html.indexOf('src="' + source + '?v=' + version + '"'));
 
   assert.ok(positions.every((position) => position >= 0));
   assert.deepEqual([...positions].sort((a, b) => a - b), positions);
   assert.doesNotMatch(html, /type="module"/);
+});
+
+test('local styles and scripts use the package version to avoid stale deployments', () => {
+  const html = read('index.html');
+  const version = JSON.parse(read('package.json')).version;
+  const localAssets = Array.from(html.matchAll(/(?:href|src)="((?:css|js)\/[^"?]+)(?:\?v=([^"]+))?"/g));
+
+  assert.ok(localAssets.length > 0);
+  assert.ok(localAssets.every((match) => match[2] === version));
 });
 
 test('editor grid reserves the remaining height for the textarea', () => {
@@ -172,8 +182,8 @@ test('print stylesheet isolates an A4 resume page', () => {
   const html = read('index.html');
   const css = read('css/print.css');
 
-  assert.match(html, /<link id="resume-styles" rel="stylesheet" href="css\/resume\.css">/);
-  assert.match(html, /<link id="print-styles" rel="stylesheet" href="css\/print\.css" media="print">/);
+  assert.match(html, /<link id="resume-styles" rel="stylesheet" href="css\/resume\.css\?v=[^"]+">/);
+  assert.match(html, /<link id="print-styles" rel="stylesheet" href="css\/print\.css\?v=[^"]+" media="print">/);
   assert.match(css, /@page\s*{[^}]*size:\s*A4/);
   assert.match(css, /\.app-header[\s\S]*display:\s*none/);
   assert.match(css, /\.syntax-dialog,[\s\S]*display:\s*none\s*!important/);
