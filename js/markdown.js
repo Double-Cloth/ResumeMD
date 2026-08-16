@@ -154,6 +154,22 @@
     return html;
   }
 
+  function renderEntryTitle(value) {
+    const parts = String(value == null ? '' : value).split('｜');
+    if (parts.length < 2) {
+      return renderInline(value);
+    }
+
+    const primary = parts.shift().trim();
+    const secondary = parts.join('｜').trim();
+    if (!primary || !secondary) {
+      return renderInline(value);
+    }
+
+    return '<span class="resume-entry-primary">' + renderInline(primary) + '</span>'
+      + '<span class="resume-entry-secondary">｜' + renderInline(secondary) + '</span>';
+  }
+
   function parseMarkdown(source) {
     const lines = String(source == null ? '' : source).replace(/\r\n?/g, '\n').split('\n');
     const blocks = [];
@@ -262,10 +278,10 @@
           : null;
 
         if (dateMatch) {
-          html += '<div class="resume-entry-heading"><h3>' + renderInline(block.text) + '</h3><time>' + escapeHTML(dateMatch[1]) + '</time></div>';
+          html += '<div class="resume-entry-heading"><h3>' + renderEntryTitle(block.text) + '</h3><time>' + escapeHTML(dateMatch[1]) + '</time></div>';
           index += 1;
         } else {
-          html += '<h3>' + renderInline(block.text) + '</h3>';
+          html += '<h3>' + renderEntryTitle(block.text) + '</h3>';
         }
         continue;
       }

@@ -67,9 +67,18 @@ test('pairs a level-three heading with a following inline-code-only date', () =>
   const html = renderBlocks(blocks);
 
   assert.match(html, /<div class="resume-entry-heading">/);
-  assert.match(html, /<h3>Whalgebra｜独立开发者<\/h3>/);
+  assert.match(html, /<h3><span class="resume-entry-primary">Whalgebra<\/span><span class="resume-entry-secondary">｜独立开发者<\/span><\/h3>/);
   assert.match(html, /<time>2022\.01 - 至今<\/time>/);
   assert.doesNotMatch(html, /<p><code>2022\.01 - 至今<\/code><\/p>/);
+});
+
+test('separates entry primary and secondary text while preserving inline safety', () => {
+  const blocks = parseMarkdown('### **同济大学**｜软件工程｜<本科>\n\n- 课程内容');
+  const html = renderBlocks(blocks);
+
+  assert.match(html, /<span class="resume-entry-primary"><strong>同济大学<\/strong><\/span>/);
+  assert.match(html, /<span class="resume-entry-secondary">｜软件工程｜&lt;本科&gt;<\/span>/);
+  assert.doesNotMatch(html, /<本科>/);
 });
 
 test('renders semantic block markup', () => {
