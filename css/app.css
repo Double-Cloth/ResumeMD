@@ -507,7 +507,7 @@ select:focus-visible {
   border: 0 !important;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1080px) {
   body {
     overflow: auto;
   }
@@ -518,6 +518,7 @@ select:focus-visible {
   }
 
   .app-header {
+    gap: 12px;
     padding: 0 16px;
   }
 
@@ -527,15 +528,19 @@ select:focus-visible {
   }
 
   .toolbar {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
     gap: 4px;
   }
 
   .toolbar-button {
+    flex: 0 0 38px;
     width: 38px;
     padding: 0;
   }
 
   .toolbar-button-primary {
+    flex: 0 0 auto;
     width: auto;
     padding: 0 12px;
   }
@@ -588,6 +593,11 @@ select:focus-visible {
 }
 
 @media (max-width: 560px) {
+  .app-header {
+    gap: 8px;
+    padding: 0 12px;
+  }
+
   .brand-copy strong {
     font-size: 16px;
   }
@@ -651,6 +661,16 @@ select:focus-visible {
 
   .resume-stats span + span::before {
     margin-right: 6px;
+  }
+}
+
+@media (max-width: 360px) {
+  .brand {
+    gap: 0;
+  }
+
+  .brand-copy {
+    display: none;
   }
 }
 

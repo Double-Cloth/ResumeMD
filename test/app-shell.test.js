@@ -132,6 +132,15 @@ test('app runtime guards localStorage, counts Unicode characters, and refreshes 
   assert.match(app, /renderDocument\(\);\s*const frontMatter = api\.parseFrontMatter\(editor\.value\);/);
 });
 
+test('responsive toolbar stays on one row and switches tablets to focused panes', () => {
+  const css = read('css/app.css');
+
+  assert.match(css, /@media \(max-width: 1080px\)/);
+  assert.match(css, /\.toolbar\s*{[\s\S]*?flex-wrap:\s*nowrap/);
+  assert.match(css, /\.toolbar-button-primary\s*{[\s\S]*?flex:\s*0 0 auto/);
+  assert.match(css, /@media \(max-width: 360px\)[\s\S]*?\.brand-copy\s*{[\s\S]*?display:\s*none/);
+});
+
 test('resume styles no longer include removed basic-info or old header-right layout selectors', () => {
   const css = read('css/resume.css') + '\n' + read('css/print.css');
 
