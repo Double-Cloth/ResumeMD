@@ -91,6 +91,7 @@ photo: dist/photo.jpg
 
 - 不加载远程 URL，例如 `https://example.com/photo.jpg`。
 - 不支持 `.svg` 作为头像，避免脚本或外部资源风险。
+- 通过“上传照片”选择的 JPG、PNG、WebP 或 GIF 会优先单独保存在浏览器本地；若照片存储不可用，则以内嵌图片数据保留在当前 Markdown 中，避免形成无效引用。
 - 图片建议使用证件照比例，示例头像文件位于 `dist/photo.jpg`。
 
 ## Markdown 写法
@@ -175,7 +176,7 @@ photo: dist/photo.jpg
 
 - 普通文本输出前统一进行 HTML 转义。
 - Markdown 链接只允许 `http:`、`https:`、`mailto:`、`tel:`、锚点和安全相对路径。
-- 头像只允许本地或相对图片路径，不允许远程、`data:`、`file:` 或脚本协议。
+- 头像只允许本地或相对图片路径，以及应用上传流程生成的 JPG、PNG、WebP、GIF 图片数据；不允许远程、`file:`、SVG 或脚本协议。
 - 不执行用户输入中的 HTML 或 JavaScript。
 - 项目不加载 CDN、远程字体、统计脚本或其他网络资源。
 
@@ -195,6 +196,7 @@ markdown-resume/
 │   ├── frontmatter.js
 │   ├── markdown.js
 │   ├── pagination.js
+│   ├── photo.js
 │   ├── print.js
 │   ├── renderer.js
 │   └── storage.js

@@ -239,10 +239,6 @@
     setStatus('Markdown 已导出', 'saved', true);
   }
 
-  function isPhotoDataURL(value) {
-    return /^data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+/]+={0,2}$/i.test(String(value || '').trim());
-  }
-
   function resolveProfilePhoto(profile) {
     const data = Object.assign({}, profile || {});
     const rawPhoto = String(data.photo || '').trim();
@@ -254,7 +250,7 @@
       }
 
       const loadedPhoto = photoStorage.load();
-      if (loadedPhoto.ok && isPhotoDataURL(loadedPhoto.value)) {
+      if (loadedPhoto.ok && api.isPhotoDataURL(loadedPhoto.value)) {
         uploadedPhotoDataURL = loadedPhoto.value;
         data.photo = loadedPhoto.value;
       }
@@ -263,60 +259,23 @@
     return data;
   }
 
-  function setFrontMatterField(source, key, value) {
-    const normalized = String(source == null ? '' : source).replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
-    const lines = normalized.split('\n');
-    const field = String(key || '').trim();
-    const nextLine = field + ': ' + String(value == null ? '' : value);
-
-    if (!field) {
-      return normalized;
-    }
-
-    if (lines[0] !== '---') {
-      return ['---', nextLine, '---', '', normalized.replace(/^\n+/, '')].join('\n');
-    }
-
-    const closingIndex = lines.findIndex(function (line, index) {
-      return index > 0 && line === '---';
-    });
-
-    if (closingIndex === -1) {
-      return ['---', nextLine, '---', '', normalized].join('\n');
-    }
-
-    const fieldPattern = new RegExp('^\\s*' + field.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*:');
-    for (let index = 1; index < closingIndex; index += 1) {
-      if (fieldPattern.test(lines[index])) {
-        lines[index] = nextLine;
-        return lines.join('\n');
-      }
-    }
-
-    lines.splice(closingIndex, 0, nextLine);
-    return lines.join('\n');
-  }
-
   function migrateInlinePhoto(source) {
-    const frontMatter = api.parseFrontMatter(source);
-    if (!isPhotoDataURL(frontMatter.data.photo)) {
-      return source;
+    const result = api.migrateInlinePhotoSource(source, photoStorage, photoReference);
+    if (result.photoDataURL) {
+      uploadedPhotoDataURL = result.photoDataURL;
     }
-
-    uploadedPhotoDataURL = frontMatter.data.photo.trim();
-    photoStorage.save(uploadedPhotoDataURL);
-    return setFrontMatterField(source, 'photo', photoReference);
+    return result.source;
   }
 
   function applyUploadedPhoto(file) {
     setStatus('正在读取照片…', 'saving');
     api.readImageFile(file)
       .then(function (dataURL) {
-        uploadedPhotoDataURL = dataURL;
-        const saveResult = photoStorage.save(dataURL);
-        editor.value = setFrontMatterField(editor.value, 'photo', photoReference);
+        const result = api.prepareUploadedPhotoSource(editor.value, dataURL, photoStorage, photoReference);
+        uploadedPhotoDataURL = result.photoDataURL;
+        editor.value = result.source;
         renderDocument();
-        setStatus(saveResult.ok ? '已上传照片 ' + file.name : '照片已应用，本地照片保存不可用', saveResult.ok ? 'saved' : 'error', saveResult.ok);
+        setStatus(result.persisted ? '已上传照片 ' + file.name : '照片已内嵌，本地照片存储不可用', result.persisted ? 'saved' : 'error', result.persisted);
       })
       .catch(function (error) {
         setStatus(error.message || '照片上传失败', 'error');
