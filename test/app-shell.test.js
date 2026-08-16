@@ -255,7 +255,8 @@ test('mobile preview defaults to a responsive fit-width zoom', () => {
   assert.match(app, /value === 'fit'/);
   assert.match(app, /availableWidth \/ pageWidth/);
   assert.match(app, /matchMedia\('\(max-width: 1080px\)'\)[\s\S]*zoomSelect\.value = 'fit'/);
-  assert.match(app, /function setMobileView[\s\S]*!isEditor && zoomSelect\.value === 'fit'[\s\S]*setPreviewZoom\('fit'\)/);
+  assert.match(app, /function setMobileView[\s\S]*if \(!isEditor\)[\s\S]*requestAnimationFrame[\s\S]*renderDocument\(\)/);
+  assert.match(app, /function renderDocument[\s\S]*zoomSelect\.value === 'fit'[\s\S]*setPreviewZoom\('fit'\)/);
   assert.match(app, /window\.addEventListener\('resize'/);
   assert.match(css, /\.resume-document\.is-fit-width\s*{[\s\S]*?zoom:\s*var\(--preview-scale/);
 });

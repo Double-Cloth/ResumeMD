@@ -292,8 +292,10 @@
     editorTab.tabIndex = isEditor ? 0 : -1;
     previewTab.tabIndex = isEditor ? -1 : 0;
 
-    if (!isEditor && zoomSelect.value === 'fit') {
-      setPreviewZoom('fit');
+    if (!isEditor) {
+      window.requestAnimationFrame(function () {
+        renderDocument();
+      });
     }
 
     if (moveFocus) {
