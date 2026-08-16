@@ -153,6 +153,53 @@
       return parent;
     }
 
+    function appendEntry(parent, entry, reopenParent) {
+      const entryClass = entry.className || 'resume-entry';
+      const elements = Array.from(entry.children).filter(isElement);
+      let activeParent = parent;
+      let activeEntry = null;
+
+      function openEntry(continuation) {
+        activeEntry = ownerDocument.createElement('div');
+        activeEntry.className = entryClass + (continuation ? ' resume-entry-continuation' : '');
+        activeParent.appendChild(activeEntry);
+        return activeEntry;
+      }
+
+      function reopenEntry() {
+        activeParent = reopenParent();
+        return openEntry(true);
+      }
+
+      openEntry(false);
+
+      elements.forEach(function (child) {
+        if (/^(UL|OL)$/.test(child.tagName)) {
+          activeEntry = appendList(activeEntry, child, reopenEntry);
+          return;
+        }
+
+        const clone = child.cloneNode(true);
+        activeEntry.appendChild(clone);
+
+        if (!isPageOverflowing(currentPage)) {
+          return;
+        }
+
+        clone.parentNode.removeChild(clone);
+        removeIfEmpty(activeEntry);
+        activeEntry = reopenEntry();
+        activeEntry.appendChild(clone);
+
+        if (isPageOverflowing(currentPage)) {
+          clone.classList.add('resume-overflow-block');
+        }
+      });
+
+      removeIfEmpty(activeEntry);
+      return activeParent;
+    }
+
     function appendSection(section) {
       const sectionClass = section.className || 'resume-section';
       const elements = Array.from(section.children).filter(isElement);
@@ -201,6 +248,19 @@
         }
 
         const target = activeSection || openSection(false);
+
+        if (child.classList && child.classList.contains('resume-entry')) {
+          const entryClone = child.cloneNode(true);
+          target.appendChild(entryClone);
+
+          if (!isPageOverflowing(currentPage)) {
+            return;
+          }
+
+          entryClone.parentNode.removeChild(entryClone);
+          activeSection = appendEntry(target, child, reopenContinuation);
+          return;
+        }
 
         if (/^(UL|OL)$/.test(child.tagName)) {
           activeSection = appendList(target, child, reopenContinuation);

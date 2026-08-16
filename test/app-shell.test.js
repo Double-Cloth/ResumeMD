@@ -119,6 +119,16 @@ test('preview is a paginated resume document instead of one continuous paper', (
   assert.match(printCSS, /\.resume-paper\s*\{[\s\S]*?break-after:\s*page/);
 });
 
+test('pagination splits oversized resume entries into continuation blocks', () => {
+  const pagination = read('js/pagination.js');
+  const css = read('css/resume.css');
+
+  assert.match(pagination, /function appendEntry\(parent, entry, reopenParent\)/);
+  assert.match(pagination, /child\.classList\.contains\('resume-entry'\)/);
+  assert.match(pagination, /resume-entry-continuation/);
+  assert.match(css, /\.resume-entry-continuation\s*{/);
+});
+
 test('app runtime guards localStorage, counts Unicode characters, and refreshes before printing', () => {
   const app = read('js/app.js');
 
