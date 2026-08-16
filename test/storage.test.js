@@ -32,3 +32,11 @@ test('converts storage exceptions into non-throwing results', () => {
   assert.equal(storage.save('content').ok, false);
   assert.equal(storage.clear().ok, false);
 });
+
+test('reports an unavailable backend instead of pretending data was persisted', () => {
+  const storage = createStorage(null, 'resume');
+
+  assert.equal(storage.load().ok, false);
+  assert.equal(storage.save('content').ok, false);
+  assert.equal(storage.clear().ok, false);
+});

@@ -11,30 +11,39 @@
 
   function createStorage(backend, key) {
     const storageKey = String(key || 'resumemd.source.v1');
+    const unavailableError = backend ? null : new Error('Storage backend is unavailable.');
 
     return {
       load: function () {
+        if (!backend) {
+          return { ok: false, value: null, error: unavailableError };
+        }
+
         try {
-          return { ok: true, value: backend ? backend.getItem(storageKey) : null };
+          return { ok: true, value: backend.getItem(storageKey) };
         } catch (error) {
           return { ok: false, value: null, error: error };
         }
       },
       save: function (value) {
+        if (!backend) {
+          return { ok: false, error: unavailableError };
+        }
+
         try {
-          if (backend) {
-            backend.setItem(storageKey, String(value));
-          }
+          backend.setItem(storageKey, String(value));
           return { ok: true };
         } catch (error) {
           return { ok: false, error: error };
         }
       },
       clear: function () {
+        if (!backend) {
+          return { ok: false, error: unavailableError };
+        }
+
         try {
-          if (backend) {
-            backend.removeItem(storageKey);
-          }
+          backend.removeItem(storageKey);
           return { ok: true };
         } catch (error) {
           return { ok: false, error: error };
