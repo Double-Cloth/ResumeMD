@@ -36,6 +36,9 @@ test('index provides the editor, preview, toolbar actions, and embedded example'
   assert.match(html, /id="markdown-highlight"[^>]+aria-hidden="true"/);
   assert.match(html, /id="resume-preview"/);
   assert.match(html, /id="import-button"/);
+  assert.match(html, /id="syntax-help-button"[^>]+aria-label="查看 Markdown 语法说明"/);
+  assert.match(html, /id="syntax-help-dialog"[^>]+aria-labelledby="syntax-help-title"/);
+  assert.match(html, /id="syntax-help-close"[^>]+aria-label="关闭语法说明"/);
   assert.match(html, /id="photo-button"/);
   assert.match(html, /id="photo-input"/);
   assert.match(html, /id="export-button"/);
@@ -94,6 +97,24 @@ test('editor grid reserves the remaining height for the textarea', () => {
   assert.match(css, /\.editor-footer\s*\{[\s\S]*?grid-row:\s*4/);
 });
 
+test('syntax help documents project-specific Markdown rules in an accessible dialog', () => {
+  const html = read('index.html');
+  const css = read('css/app.css');
+  const app = read('js/app.js');
+
+  assert.match(html, /<h2 id="syntax-help-title">ResumeMD 语法说明<\/h2>/);
+  assert.match(html, /个人信息：Front Matter/);
+  assert.match(html, /gender: 男[\s\S]*age: 21[\s\S]*birth: 2005\.06[\s\S]*political: 共青团员[\s\S]*city: 上海/);
+  assert.match(html, /<code>##<\/code> 创建简历章节，<code>###<\/code> 创建章节中的经历条目/);
+  assert.match(html, /全角 <code>｜<\/code> 会将主体与说明分层显示/);
+  assert.match(html, /原始 HTML 会按普通文本处理/);
+  assert.match(css, /\.syntax-dialog::backdrop\s*{/);
+  assert.match(css, /@media \(max-width: 560px\)[\s\S]*?\.syntax-dialog-content\s*{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/);
+  assert.match(app, /function openSyntaxHelp\(\)[\s\S]*syntaxHelpDialog\.showModal\(\)/);
+  assert.match(app, /function closeSyntaxHelp\(\)[\s\S]*syntaxHelpDialog\.close\(\)/);
+  assert.match(app, /event\.target === syntaxHelpDialog/);
+});
+
 test('desktop chrome keeps compact fixed rows and a flat preview workspace', () => {
   const css = read('css/app.css');
 
@@ -125,6 +146,7 @@ test('print stylesheet isolates an A4 resume page', () => {
   assert.match(html, /<link id="print-styles" rel="stylesheet" href="css\/print\.css" media="print">/);
   assert.match(css, /@page\s*{[^}]*size:\s*A4/);
   assert.match(css, /\.app-header[\s\S]*display:\s*none/);
+  assert.match(css, /\.syntax-dialog,[\s\S]*display:\s*none\s*!important/);
   assert.match(css, /\*,[\s\S]*box-sizing:\s*border-box/);
   assert.match(css, /\.resume-paper[\s\S]*width:\s*210mm/);
   assert.match(css, /\.resume-paper[\s\S]*min-height:\s*297mm/);

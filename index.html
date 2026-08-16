@@ -23,6 +23,10 @@
       </a>
 
       <nav class="toolbar" aria-label="简历操作">
+        <button class="toolbar-button" id="syntax-help-button" type="button" aria-label="查看 Markdown 语法说明" title="查看 Markdown 语法说明">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+          <span>说明</span>
+        </button>
         <button class="toolbar-button" id="reset-button" type="button" aria-label="恢复内置示例" title="恢复内置示例">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 9a8 8 0 1 1 .1 6.2M4.6 9V4.8M4.6 9h4.2"/></svg>
           <span>示例</span>
@@ -122,6 +126,76 @@
       </section>
     </main>
   </div>
+
+  <dialog class="syntax-dialog" id="syntax-help-dialog" aria-labelledby="syntax-help-title">
+    <div class="syntax-dialog-shell">
+      <header class="syntax-dialog-header">
+        <div>
+          <p class="pane-kicker">GUIDE</p>
+          <h2 id="syntax-help-title">ResumeMD 语法说明</h2>
+        </div>
+        <button class="syntax-dialog-close" id="syntax-help-close" type="button" aria-label="关闭语法说明" title="关闭">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </header>
+
+      <div class="syntax-dialog-content">
+        <section class="syntax-guide-section syntax-guide-section-wide">
+          <h3>个人信息：Front Matter</h3>
+          <p>个人信息必须写在文档开头，并用两行 <code>---</code> 包裹。空字段会自动隐藏。</p>
+          <pre><code>---
+name: 童同学
+title: 软件开发实习生
+phone: 138 0000 0000
+email: resume@example.com
+location: 上海
+website: https://github.com/example
+education: 本科在读
+experience: 2 年项目经验
+gender: 男
+age: 21
+birth: 2005.06
+political: 共青团员
+city: 上海
+photo: examples/example.png
+---</code></pre>
+        </section>
+
+        <section class="syntax-guide-section">
+          <h3>章节与条目</h3>
+          <p><code>##</code> 创建简历章节，<code>###</code> 创建章节中的经历条目。</p>
+          <pre><code>## 实习经历
+
+### 星河科技｜前端开发实习生
+
+- 完成数据看板和表格模块
+- 补充异常状态与测试</code></pre>
+        </section>
+
+        <section class="syntax-guide-section">
+          <h3>日期与标题层级</h3>
+          <p>日期需紧跟 <code>###</code>，单独一行并用反引号包裹。全角 <code>｜</code> 会将主体与说明分层显示。</p>
+          <pre><code>### 同济大学｜软件工程｜本科
+
+`2024.09 - 2028.06`</code></pre>
+        </section>
+
+        <section class="syntax-guide-section syntax-guide-section-wide">
+          <h3>正文格式</h3>
+          <p>支持无序/有序列表、<strong>粗体</strong>、<em>斜体</em>、行内代码和安全链接。原始 HTML 会按普通文本处理。</p>
+          <pre><code>- **技术栈：** JavaScript、CSS、Node.js
+- 项目地址：[github.com/example](https://github.com/example)
+1. 需求分析
+2. 开发与测试</code></pre>
+        </section>
+      </div>
+
+      <footer class="syntax-dialog-footer">
+        <p>也可以使用“插入模板”快速生成常用结构。</p>
+        <button class="syntax-dialog-confirm" id="syntax-help-confirm" type="button">知道了</button>
+      </footer>
+    </div>
+  </dialog>
 
   <input id="file-input" type="file" accept=".md,.markdown,.txt,text/markdown,text/plain" hidden>
   <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif" hidden>

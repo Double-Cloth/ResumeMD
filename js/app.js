@@ -20,6 +20,10 @@
   const editorTab = document.getElementById('editor-tab');
   const previewTab = document.getElementById('preview-tab');
   const undoButton = document.getElementById('undo-button');
+  const syntaxHelpButton = document.getElementById('syntax-help-button');
+  const syntaxHelpDialog = document.getElementById('syntax-help-dialog');
+  const syntaxHelpClose = document.getElementById('syntax-help-close');
+  const syntaxHelpConfirm = document.getElementById('syntax-help-confirm');
   const exampleSource = document.getElementById('example-source').textContent.trim();
   const storage = api.createStorage(getStorageBackend(), 'resumemd.source.v1');
   const backupStorage = api.createStorage(getStorageBackend(), 'resumemd.source.backup.v1');
@@ -74,6 +78,28 @@
       '<span>' + stats.pages.toLocaleString('zh-CN') + ' 页</span>',
     ].join('');
     pageCount.textContent = stats.pages.toLocaleString('zh-CN') + ' 页';
+  }
+
+  function openSyntaxHelp() {
+    if (typeof syntaxHelpDialog.showModal === 'function') {
+      if (!syntaxHelpDialog.open) {
+        syntaxHelpDialog.showModal();
+      }
+      return;
+    }
+
+    syntaxHelpDialog.setAttribute('open', '');
+    syntaxHelpClose.focus();
+  }
+
+  function closeSyntaxHelp() {
+    if (typeof syntaxHelpDialog.close === 'function' && syntaxHelpDialog.open) {
+      syntaxHelpDialog.close();
+      return;
+    }
+
+    syntaxHelpDialog.removeAttribute('open');
+    syntaxHelpButton.focus();
   }
 
   function updateUndoButton() {
@@ -362,6 +388,18 @@
   });
 
   document.getElementById('export-button').addEventListener('click', exportSource);
+
+  syntaxHelpButton.addEventListener('click', openSyntaxHelp);
+  syntaxHelpClose.addEventListener('click', closeSyntaxHelp);
+  syntaxHelpConfirm.addEventListener('click', closeSyntaxHelp);
+  syntaxHelpDialog.addEventListener('click', function (event) {
+    if (event.target === syntaxHelpDialog) {
+      closeSyntaxHelp();
+    }
+  });
+  syntaxHelpDialog.addEventListener('close', function () {
+    syntaxHelpButton.focus();
+  });
 
   snippetSelect.addEventListener('change', insertSelectedSnippet);
 

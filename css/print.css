@@ -31,6 +31,7 @@ body {
 .mobile-tabs,
 .editor-pane,
 .preview-topbar,
+.syntax-dialog,
 #file-input {
   display: none !important;
 }
