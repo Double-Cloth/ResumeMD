@@ -1,7 +1,7 @@
 :root {
   color-scheme: light;
-  --accent: #0fbf9f;
-  --accent-strong: #079c83;
+  --accent: #087f6d;
+  --accent-strong: #066b5b;
   --accent-soft: #e4faf5;
   --ink: #172033;
   --muted: #667085;
@@ -51,7 +51,7 @@ button:focus-visible,
 a:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 3px solid rgb(15 191 159 / 28%);
+  outline: 3px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -93,7 +93,7 @@ select:focus-visible {
   place-items: center;
   border-radius: 10px;
   background: var(--accent);
-  box-shadow: 0 6px 14px rgb(15 191 159 / 25%);
+  box-shadow: 0 6px 14px rgb(8 127 109 / 24%);
 }
 
 .brand-mark::before,
@@ -197,7 +197,7 @@ select:focus-visible {
   border-color: var(--accent);
   background: var(--accent);
   color: #fff;
-  box-shadow: 0 6px 14px rgb(15 191 159 / 20%);
+  box-shadow: 0 6px 14px rgb(8 127 109 / 20%);
 }
 
 .toolbar-button-primary:hover {
@@ -292,7 +292,7 @@ select:focus-visible {
   font-weight: 750;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 6px 14px rgb(15 191 159 / 18%);
+  box-shadow: 0 6px 14px rgb(8 127 109 / 18%);
   transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
 }
 

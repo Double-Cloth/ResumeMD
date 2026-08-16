@@ -15,6 +15,20 @@ function cssBlock(css, selector) {
   return match ? match[1] : '';
 }
 
+function relativeLuminance(hex) {
+  const channels = hex.match(/[0-9a-f]{2}/gi).map((channel) => parseInt(channel, 16) / 255);
+  const linear = channels.map((value) => value <= 0.04045
+    ? value / 12.92
+    : ((value + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+}
+
+function contrastRatio(first, second) {
+  const lighter = Math.max(relativeLuminance(first), relativeLuminance(second));
+  const darker = Math.min(relativeLuminance(first), relativeLuminance(second));
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
 test('index provides the editor, preview, toolbar actions, and embedded example', () => {
   const html = read('index.html');
 
@@ -126,6 +140,16 @@ test('preview is a paginated resume document instead of one continuous paper', (
   assert.match(css, /\.resume-document\s*\{/);
   assert.match(css, /\.resume-paper\s*\+\s*\.resume-paper/);
   assert.match(printCSS, /\.resume-paper\s*\{[\s\S]*?break-after:\s*page/);
+});
+
+test('primary colors meet WCAG AA contrast for normal text', () => {
+  const css = read('css/app.css');
+  const accent = css.match(/--accent:\s*(#[0-9a-f]{6})/i)[1];
+  const accentStrong = css.match(/--accent-strong:\s*(#[0-9a-f]{6})/i)[1];
+
+  assert.ok(contrastRatio(accent, '#ffffff') >= 4.5);
+  assert.ok(contrastRatio(accentStrong, '#ffffff') >= 4.5);
+  assert.match(css, /outline:\s*3px solid var\(--accent\)/);
 });
 
 test('pagination splits oversized resume entries into continuation blocks', () => {
