@@ -306,13 +306,30 @@
       });
   }
 
-  function setMobileView(view) {
+  function setMobileView(view, moveFocus) {
     const isEditor = view === 'editor';
     workspace.dataset.mobileView = isEditor ? 'editor' : 'preview';
     editorTab.classList.toggle('is-active', isEditor);
     previewTab.classList.toggle('is-active', !isEditor);
     editorTab.setAttribute('aria-selected', String(isEditor));
     previewTab.setAttribute('aria-selected', String(!isEditor));
+    editorTab.tabIndex = isEditor ? 0 : -1;
+    previewTab.tabIndex = isEditor ? -1 : 0;
+
+    if (moveFocus) {
+      (isEditor ? editorTab : previewTab).focus();
+    }
+  }
+
+  function handleMobileTabKeydown(event) {
+    const key = event.key;
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(key)) {
+      return;
+    }
+
+    event.preventDefault();
+    const showEditor = key === 'ArrowLeft' || key === 'Home';
+    setMobileView(showEditor ? 'editor' : 'preview', true);
   }
 
   editor.addEventListener('input', scheduleRender);
@@ -411,6 +428,9 @@
   previewTab.addEventListener('click', function () {
     setMobileView('preview');
   });
+
+  editorTab.addEventListener('keydown', handleMobileTabKeydown);
+  previewTab.addEventListener('keydown', handleMobileTabKeydown);
 
   document.addEventListener('keydown', function (event) {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {

@@ -31,6 +31,10 @@ test('index provides the editor, preview, toolbar actions, and embedded example'
   assert.match(html, /id="resume-stats"/);
   assert.match(html, /id="zoom-select"/);
   assert.match(html, /id="page-count"/);
+  assert.match(html, /id="editor-tab"[^>]+role="tab"[^>]+tabindex="0"/);
+  assert.match(html, /id="preview-tab"[^>]+role="tab"[^>]+tabindex="-1"/);
+  assert.match(html, /id="editor-panel"[^>]+role="tabpanel"[^>]+aria-labelledby="editor-tab editor-title"/);
+  assert.match(html, /id="preview-panel"[^>]+role="tabpanel"[^>]+aria-labelledby="preview-tab preview-title"/);
   assert.match(html, /id="reset-button"[^>]+aria-label="恢复内置示例"/);
   assert.match(html, /id="clear-button"[^>]+aria-label="清空当前草稿"/);
   assert.match(html, /id="import-button"[^>]+aria-label="导入 Markdown"/);
@@ -142,6 +146,8 @@ test('app runtime guards localStorage, counts Unicode characters, and refreshes 
   assert.match(app, /api\.createStorage\(getStorageBackend\(\), 'resumemd\.photo\.v1'\)/);
   assert.match(app, /api\.createStorage\(getStorageBackend\(\), 'resumemd\.source\.backup\.v1'\)/);
   assert.match(app, /draftHistory\.restore\(editor\.value\)/);
+  assert.match(app, /function handleMobileTabKeydown\(event\)/);
+  assert.match(app, /\['ArrowLeft', 'ArrowRight', 'Home', 'End'\]/);
   assert.match(app, /api\.makeResumeStats\(source, pages\.length\)/);
   assert.match(app, /api\.readImageFile\(file\)/);
   assert.match(app, /api\.prepareUploadedPhotoSource\(editor\.value, dataURL, photoStorage, photoReference\)/);

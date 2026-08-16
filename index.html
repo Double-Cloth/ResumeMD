@@ -47,12 +47,12 @@
     </header>
 
     <div class="mobile-tabs" role="tablist" aria-label="移动端视图切换">
-      <button class="mobile-tab is-active" id="editor-tab" type="button" role="tab" aria-selected="true" aria-controls="editor-panel">编辑</button>
-      <button class="mobile-tab" id="preview-tab" type="button" role="tab" aria-selected="false" aria-controls="preview-panel">预览</button>
+      <button class="mobile-tab is-active" id="editor-tab" type="button" role="tab" aria-selected="true" aria-controls="editor-panel" tabindex="0">编辑</button>
+      <button class="mobile-tab" id="preview-tab" type="button" role="tab" aria-selected="false" aria-controls="preview-panel" tabindex="-1">预览</button>
     </div>
 
     <main class="workspace" data-mobile-view="editor">
-      <section class="editor-pane" id="editor-panel" aria-labelledby="editor-title">
+      <section class="editor-pane" id="editor-panel" role="tabpanel" aria-labelledby="editor-tab editor-title">
         <div class="pane-header">
           <div>
             <p class="pane-kicker">SOURCE</p>
@@ -96,7 +96,7 @@
         </footer>
       </section>
 
-      <section class="preview-pane" id="preview-panel" aria-labelledby="preview-title">
+      <section class="preview-pane" id="preview-panel" role="tabpanel" aria-labelledby="preview-tab preview-title">
         <div class="preview-topbar">
           <div>
             <p class="pane-kicker">PREVIEW</p>
