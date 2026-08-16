@@ -3,6 +3,8 @@
 
   const api = window.ResumeMD;
   const editor = document.getElementById('markdown-editor');
+  const editorHighlight = document.querySelector('#markdown-highlight code');
+  const editorHighlightLayer = document.getElementById('markdown-highlight');
   const preview = document.getElementById('resume-preview');
   const errorPanel = document.getElementById('error-panel');
   const status = document.getElementById('document-status');
@@ -79,6 +81,16 @@
     const available = previous.ok && previous.available && previous.value !== editor.value;
     undoButton.hidden = !available;
     undoButton.disabled = !available;
+  }
+
+  function syncEditorHighlightScroll() {
+    editorHighlightLayer.scrollTop = editor.scrollTop;
+    editorHighlightLayer.scrollLeft = editor.scrollLeft;
+  }
+
+  function updateEditorHighlight() {
+    editorHighlight.innerHTML = api.highlightMarkdown(editor.value) + '\n';
+    syncEditorHighlightScroll();
   }
 
   function setPreviewZoom(value) {
@@ -192,6 +204,7 @@
     }
 
     const source = editor.value;
+    updateEditorHighlight();
     const frontMatter = api.parseFrontMatter(source);
     const profile = resolveProfilePhoto(frontMatter.data);
     const blocks = api.parseMarkdown(frontMatter.body);
@@ -372,7 +385,11 @@
     setMobileView(showEditor ? 'editor' : 'preview', true);
   }
 
-  editor.addEventListener('input', scheduleRender);
+  editor.addEventListener('input', function () {
+    updateEditorHighlight();
+    scheduleRender();
+  });
+  editor.addEventListener('scroll', syncEditorHighlightScroll);
   window.addEventListener('pagehide', flushPendingRender);
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'hidden') {

@@ -80,7 +80,10 @@
         <div class="error-panel" id="error-panel" role="status" aria-live="polite" hidden></div>
 
         <label class="visually-hidden" for="markdown-editor">Markdown 简历内容</label>
-        <textarea id="markdown-editor" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="editor-hint"></textarea>
+        <div class="editor-input-shell">
+          <pre class="markdown-highlight" id="markdown-highlight" aria-hidden="true"><code></code></pre>
+          <textarea id="markdown-editor" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="editor-hint"></textarea>
+        </div>
 
         <footer class="editor-footer">
           <span id="editor-hint">Front Matter 管理个人信息，正文使用 Markdown。</span>
@@ -284,6 +287,7 @@ city: 上海
 
   <script defer src="js/frontmatter.js"></script>
   <script defer src="js/markdown.js"></script>
+  <script defer src="js/highlight.js"></script>
   <script defer src="js/renderer.js"></script>
   <script defer src="js/storage.js"></script>
   <script defer src="js/history.js"></script>

@@ -33,6 +33,7 @@ test('index provides the editor, preview, toolbar actions, and embedded example'
   const html = read('index.html');
 
   assert.match(html, /id="markdown-editor"/);
+  assert.match(html, /id="markdown-highlight"[^>]+aria-hidden="true"/);
   assert.match(html, /id="resume-preview"/);
   assert.match(html, /id="import-button"/);
   assert.match(html, /id="photo-button"/);
@@ -66,6 +67,7 @@ test('classic scripts load in dependency order and avoid ES modules', () => {
   const expectedOrder = [
     'js/frontmatter.js',
     'js/markdown.js',
+    'js/highlight.js',
     'js/renderer.js',
     'js/storage.js',
     'js/history.js',
@@ -87,8 +89,22 @@ test('editor grid reserves the remaining height for the textarea', () => {
   const css = read('css/app.css');
 
   assert.match(css, /grid-template-rows:\s*auto auto minmax\(0, 1fr\) 40px/);
-  assert.match(css, /#markdown-editor\s*\{[\s\S]*?grid-row:\s*3/);
+  assert.match(css, /\.editor-input-shell\s*\{[\s\S]*?grid-row:\s*3/);
+  assert.match(css, /#markdown-editor,[\s\S]*?\.markdown-highlight\s*\{[\s\S]*?position:\s*absolute/);
   assert.match(css, /\.editor-footer\s*\{[\s\S]*?grid-row:\s*4/);
+});
+
+test('editor syntax highlight mirrors content and scrolling without replacing the textarea', () => {
+  const html = read('index.html');
+  const app = read('js/app.js');
+  const css = read('css/app.css');
+
+  assert.match(html, /js\/highlight\.js/);
+  assert.match(app, /api\.highlightMarkdown\(editor\.value\)/);
+  assert.match(app, /editorHighlightLayer\.scrollTop = editor\.scrollTop/);
+  assert.match(app, /editor\.addEventListener\('scroll', syncEditorHighlightScroll\)/);
+  assert.match(css, /#markdown-editor\s*\{[\s\S]*?-webkit-text-fill-color:\s*transparent/);
+  assert.match(css, /\.markdown-highlight\s*\{[\s\S]*?pointer-events:\s*none/);
 });
 
 test('print stylesheet isolates an A4 resume page', () => {

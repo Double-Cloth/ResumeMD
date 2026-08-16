@@ -363,27 +363,106 @@ select:focus-visible {
   line-height: 1.5;
 }
 
-#markdown-editor {
+.editor-input-shell {
   grid-row: 3;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #fbfcfe;
+}
+
+.editor-input-shell:focus-within {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+#markdown-editor,
+.markdown-highlight {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
   min-height: 0;
-  resize: none;
+  margin: 0;
   padding: 22px 24px 36px;
   border: 0;
   outline: 0;
-  background: #fbfcfe;
-  color: #263247;
   font-family: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 14px;
+  font-weight: 400;
   line-height: 1.72;
+  letter-spacing: normal;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
   tab-size: 2;
+}
+
+.markdown-highlight {
+  z-index: 1;
+  overflow: auto;
+  background: transparent;
+  color: #263247;
+  pointer-events: none;
+}
+
+.markdown-highlight code {
+  color: inherit;
+  font: inherit;
+  white-space: inherit;
+}
+
+#markdown-editor {
+  z-index: 2;
+  resize: none;
+  overflow: auto;
+  background: transparent;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
   caret-color: var(--accent-strong);
 }
 
 #markdown-editor::selection {
-  background: rgb(15 191 159 / 22%);
+  background: rgb(8 127 109 / 22%);
+  -webkit-text-fill-color: transparent;
+}
+
+.md-token-syntax,
+.md-token-heading-marker,
+.md-token-list-marker,
+.md-token-quote-marker {
+  color: #758198;
+}
+
+.md-token-frontmatter-delimiter,
+.md-token-frontmatter-key {
+  color: #8b4f9f;
+}
+
+.md-token-heading {
+  color: #126b61;
+}
+
+.md-token-list-marker,
+.md-token-link-text {
+  color: #087f6d;
+}
+
+.md-token-code {
+  color: #a33b2b;
+}
+
+.md-token-link-url,
+.md-token-quote {
+  color: #52627a;
+}
+
+.md-token-emphasis {
+  color: #765422;
+}
+
+.md-token-rule {
+  color: #9aa5b5;
 }
 
 .editor-footer {
@@ -680,7 +759,8 @@ select:focus-visible {
     grid-template-rows: 68px minmax(0, 1fr);
   }
 
-  #markdown-editor {
+  #markdown-editor,
+  .markdown-highlight {
     padding: 18px 16px 30px;
     font-size: 13px;
   }
