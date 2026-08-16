@@ -166,6 +166,21 @@
     }
   }
 
+  function refreshPaginationAfterLayout() {
+    function refresh() {
+      window.requestAnimationFrame(function () {
+        renderDocument();
+      });
+    }
+
+    if (document.readyState === 'complete') {
+      refresh();
+      return;
+    }
+
+    window.addEventListener('load', refresh, { once: true });
+  }
+
   function replaceSource(source, message, createBackup) {
     const backupResult = createBackup ? draftHistory.snapshot(editor.value) : { ok: true };
     editor.value = String(source == null ? '' : source);
@@ -430,4 +445,5 @@
   }
   setPreviewZoom(zoomSelect.value);
   renderDocument();
+  refreshPaginationAfterLayout();
 })();

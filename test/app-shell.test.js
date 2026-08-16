@@ -218,6 +218,15 @@ test('pending edits flush before the page is hidden or left', () => {
   assert.match(app, /document\.addEventListener\('visibilitychange',[\s\S]*document\.visibilityState === 'hidden'[\s\S]*flushPendingRender\(\)/);
 });
 
+test('initial pagination is refreshed after page resources finish layout', () => {
+  const app = read('js/app.js');
+
+  assert.match(app, /function refreshPaginationAfterLayout\(\)/);
+  assert.match(app, /window\.requestAnimationFrame\(function \(\) \{\s*renderDocument\(\)/);
+  assert.match(app, /window\.addEventListener\('load', refresh, \{ once: true \}\)/);
+  assert.match(app, /renderDocument\(\);\s*refreshPaginationAfterLayout\(\);/);
+});
+
 test('responsive toolbar stays on one row and switches tablets to focused panes', () => {
   const css = read('css/app.css');
 
