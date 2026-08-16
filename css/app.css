@@ -163,9 +163,9 @@ select:focus-visible {
   gap: 7px;
   min-height: 34px;
   padding: 0 11px;
-  border: 1px solid transparent;
+  border: 1px solid #e0e5ec;
   border-radius: 8px;
-  background: transparent;
+  background: #fff;
   color: #475467;
   font-size: 13px;
   font-weight: 650;
@@ -284,21 +284,22 @@ select:focus-visible {
   gap: 7px;
   height: 32px;
   padding: 0 12px;
-  border: 1px solid var(--accent);
+  border: 1px solid #9fd8cc;
   border-radius: 8px;
-  background: var(--accent);
-  color: #fff;
+  background: #fff;
+  color: var(--accent-strong);
   font-size: 12px;
   font-weight: 750;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgb(8 127 109 / 14%);
+  box-shadow: none;
   transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
 }
 
 .photo-upload-button:hover {
-  border-color: var(--accent-strong);
-  background: var(--accent-strong);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .photo-upload-button:active {
@@ -329,9 +330,9 @@ select:focus-visible {
 }
 
 .compact-select-dark {
-  border-color: rgb(255 255 255 / 32%);
-  background: rgb(255 255 255 / 12%);
-  color: #fff;
+  border-color: #d7dee8;
+  background: #fff;
+  color: #344054;
 }
 
 .compact-select-dark option {
@@ -551,17 +552,17 @@ select:focus-visible {
 }
 
 .preview-topbar {
-  color: #fff;
-  background: var(--workspace-deep);
-  border-bottom: 1px solid rgb(255 255 255 / 16%);
+  color: var(--ink);
+  background: #fff;
+  border-bottom: 1px solid var(--line);
 }
 
 .preview-topbar .pane-kicker {
-  color: #8af0dc;
+  color: var(--accent-strong);
 }
 
 .preview-topbar h2 {
-  color: #fff;
+  color: var(--ink);
 }
 
 .preview-badge {
@@ -569,10 +570,10 @@ select:focus-visible {
   min-width: 42px;
   height: 26px;
   place-items: center;
-  border: 1px solid rgb(255 255 255 / 34%);
+  border: 1px solid #d7dee8;
   border-radius: 7px;
-  background: rgb(255 255 255 / 12%);
-  color: #fff;
+  background: #fff;
+  color: #344054;
   font-size: 11px;
   font-weight: 750;
   letter-spacing: 0.08em;

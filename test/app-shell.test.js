@@ -151,6 +151,15 @@ test('dark preview select keeps native dropdown options readable', () => {
   assert.match(css, /\.compact-select-dark\s+option\s*\{[\s\S]*?color:\s*#172033/);
 });
 
+test('tool hierarchy keeps preview controls light and reserves solid accent for printing', () => {
+  const css = read('css/app.css');
+
+  assert.match(css, /\.preview-topbar\s*{[\s\S]*?background:\s*#fff[\s\S]*?border-bottom:\s*1px solid var\(--line\)/);
+  assert.match(css, /\.preview-badge\s*{[\s\S]*?background:\s*#fff[\s\S]*?color:\s*#344054/);
+  assert.match(css, /\.photo-upload-button\s*{[\s\S]*?background:\s*#fff[\s\S]*?color:\s*var\(--accent-strong\)/);
+  assert.match(css, /\.toolbar-button-primary\s*{[\s\S]*?background:\s*var\(--accent\)[\s\S]*?color:\s*#fff/);
+});
+
 test('print stylesheet removes the preview-only gap between A4 pages', () => {
   const printCSS = read('css/print.css');
   const followingPaper = cssBlock(printCSS, '.resume-paper + .resume-paper');
