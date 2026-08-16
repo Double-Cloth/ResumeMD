@@ -237,6 +237,21 @@ test('resume styles no longer include removed basic-info or old header-right lay
   assert.doesNotMatch(css, /\.resume-header-right\b/);
 });
 
+test('resume header uses ordered identity, contact, qualification, detail, and photo regions', () => {
+  const renderer = read('js/renderer.js');
+  const css = read('css/resume.css');
+  const app = read('js/app.js');
+
+  assert.match(renderer, /resume-identity/);
+  assert.match(renderer, /resume-contact-list/);
+  assert.match(renderer, /resume-qualification-list/);
+  assert.match(renderer, /resume-detail-list/);
+  assert.match(renderer, /resume-header-has-photo/);
+  assert.match(css, /\.resume-header-has-photo \.resume-header-main\s*{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\) 24mm/);
+  assert.doesNotMatch(css, /--resume-header-rule-width/);
+  assert.doesNotMatch(app, /createRange\(|syncHeaderRuleWidths|measureHeaderLineWidth/);
+});
+
 test('runtime files contain no external dependency or fetch call', () => {
   const runtime = [
     read('index.html'),

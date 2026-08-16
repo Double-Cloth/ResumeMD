@@ -110,93 +110,6 @@
     preview.style.setProperty('--preview-scale', String(zoom));
   }
 
-  function getRenderedScale(element) {
-    if (!element || !element.offsetWidth) {
-      return 1;
-    }
-
-    const rect = element.getBoundingClientRect();
-    return rect.width ? rect.width / element.offsetWidth : 1;
-  }
-
-  function getElementRects(element) {
-    const rects = [];
-
-    if (!element) {
-      return rects;
-    }
-
-    const range = document.createRange();
-    range.selectNodeContents(element);
-    Array.from(range.getClientRects()).forEach(function (rect) {
-      if (rect.width > 0) {
-        rects.push(rect);
-      }
-    });
-    if (typeof range.detach === 'function') {
-      range.detach();
-    }
-
-    return rects;
-  }
-
-  function measureHeaderLineWidth(element, headerLeft, scale) {
-    if (!element || !element.textContent.trim()) {
-      return 0;
-    }
-
-    const rects = element.classList && element.classList.contains('resume-contact-item')
-      ? Array.from(element.children).reduce(function (allRects, child) {
-        return allRects.concat(getElementRects(child));
-      }, [])
-      : getElementRects(element);
-
-    if (!rects.length) {
-      return 0;
-    }
-
-    const left = Math.min.apply(null, rects.map(function (rect) { return rect.left; }));
-    const right = Math.max.apply(null, rects.map(function (rect) { return rect.right; }));
-    const leftOffset = (left - headerLeft) / (scale || 1);
-
-    if (leftOffset > 6) {
-      return 0;
-    }
-
-    return (right - headerLeft) / (scale || 1);
-  }
-
-  function syncHeaderRuleWidths(pages) {
-    const pageList = pages && pages.length
-      ? pages
-      : Array.from(preview.querySelectorAll('.resume-paper'));
-    const scale = getRenderedScale(preview);
-
-    pageList.forEach(function (page) {
-      const header = page.querySelector('.resume-header');
-      if (!header) {
-        return;
-      }
-
-      const headerLeft = header.getBoundingClientRect().left;
-      const lineItems = header.querySelectorAll([
-        '.resume-header h1',
-        '.resume-title',
-        '.resume-contact-item',
-        '.resume-highlight-list span',
-      ].join(', '));
-      const maxWidth = Array.from(lineItems).reduce(function (width, item) {
-        return Math.max(width, measureHeaderLineWidth(item, headerLeft, scale));
-      }, 0);
-
-      if (maxWidth > 0) {
-        header.style.setProperty('--resume-header-rule-width', maxWidth + 'px');
-      } else {
-        header.style.removeProperty('--resume-header-rule-width');
-      }
-    });
-  }
-
   function renderDocument() {
     if (renderTimer) {
       window.clearTimeout(renderTimer);
@@ -221,7 +134,6 @@
     if (zoomSelect.value === 'fit') {
       setPreviewZoom('fit');
     }
-    syncHeaderRuleWidths(pages);
     updateErrors(frontMatter.errors);
     const stats = api.makeResumeStats(source, pages.length);
     updateStats(stats);

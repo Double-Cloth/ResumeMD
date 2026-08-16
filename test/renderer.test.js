@@ -8,7 +8,7 @@ const {
   normalizeWebsite,
 } = require('../js/renderer.js');
 
-test('renders a semantic resume header with inline contact details, highlights, photo, and body', () => {
+test('renders a semantic resume header with contacts, qualifications, details, photo, and body', () => {
   const html = buildResumeHTML(
     {
       name: '张同学',
@@ -20,28 +20,39 @@ test('renders a semantic resume header with inline contact details, highlights, 
       website: 'github.com/example',
       education: '本科在读',
       experience: '3 年项目经验',
+      gender: '男',
+      age: '21',
+      birth: '2005.06',
+      political: '共青团员',
+      city: '上海',
     },
     '<section class="resume-section"><h2>教育背景</h2></section>'
   );
 
-  assert.match(html, /<header class="resume-header">/);
+  assert.match(html, /<header class="resume-header resume-header-has-photo">/);
   assert.match(html, /<div class="resume-header-main">/);
   assert.match(html, /<div class="resume-identity">/);
   assert.match(html, /<h1>张同学<\/h1>/);
   assert.match(html, /<p class="resume-title">软件开发实习生<\/p>/);
   assert.match(html, /<div class="resume-photo-block"><img class="resume-photo" src="dist\/photo\.jpg" alt="张同学"><\/div>/);
-  assert.match(html, /<div class="resume-contact-list">/);
-  assert.match(html, /<div class="resume-highlight-list"><span>本科在读<\/span><span>3 年项目经验<\/span><\/div>/);
-  assert.match(html, /<a class="resume-contact-item" href="tel:138%200000%200000"/);
-  assert.match(html, /<a class="resume-contact-item" href="mailto:resume@example.com"/);
-  assert.match(html, /<span class="resume-contact-item">/);
-  assert.match(html, /<a class="resume-contact-item" href="https:\/\/github.com\/example"/);
+  assert.match(html, /<div class="resume-contact-list" aria-label="联系方式">/);
+  assert.match(html, /<div class="resume-qualification-list" aria-label="核心资历">/);
+  assert.match(html, /<span class="resume-qualification-label">最高学历<\/span><strong>本科在读<\/strong>/);
+  assert.match(html, /<span class="resume-qualification-label">相关经验<\/span><strong>3 年项目经验<\/strong>/);
+  assert.match(html, /<a class="resume-contact-item resume-contact-phone" href="tel:138%200000%200000"/);
+  assert.match(html, /<a class="resume-contact-item resume-contact-email" href="mailto:resume@example.com"/);
+  assert.match(html, /<span class="resume-contact-item resume-contact-location">/);
+  assert.match(html, /<a class="resume-contact-item resume-contact-website" href="https:\/\/github.com\/example"/);
   assert.match(html, />138 0000 0000<\/span><\/a>/);
   assert.match(html, />resume@example\.com<\/span><\/a>/);
   assert.match(html, />上海<\/span><\/span>/);
   assert.match(html, />github\.com\/example<\/span><\/a>/);
-  assert.match(html, />最高学历：本科在读<\/span><\/span>/);
-  assert.match(html, />相关经验：3 年项目经验<\/span><\/span>/);
+  assert.match(html, /<div class="resume-detail-list">/);
+  assert.match(html, /aria-label="性别：男">男<\/span>/);
+  assert.match(html, /aria-label="年龄：21">21 岁<\/span>/);
+  assert.match(html, /aria-label="出生日期：2005\.06">2005\.06<\/span>/);
+  assert.match(html, /aria-label="政治面貌：共青团员">共青团员<\/span>/);
+  assert.doesNotMatch(html, /aria-label="所在城市：上海"/);
   assert.doesNotMatch(html, /resume-header-right/);
   assert.doesNotMatch(html, /resume-basic-info/);
   assert.doesNotMatch(html, /basic-info-/);
@@ -51,6 +62,8 @@ test('renders a semantic resume header with inline contact details, highlights, 
   assert.equal((html.match(/>resume@example\.com</g) || []).length, 1);
   assert.equal((html.match(/>138 0000 0000</g) || []).length, 1);
   assert.equal((html.match(/>github\.com\/example</g) || []).length, 1);
+  assert.equal((html.match(/>本科在读</g) || []).length, 1);
+  assert.equal((html.match(/>3 年项目经验</g) || []).length, 1);
   assert.match(html, /<main class="resume-body">/);
   assert.match(html, /<h2>教育背景<\/h2>/);
 });
@@ -61,7 +74,9 @@ test('omits empty profile fields instead of rendering placeholders', () => {
   assert.match(html, /<h1>DC<\/h1>/);
   assert.doesNotMatch(html, /resume-title/);
   assert.doesNotMatch(html, /resume-highlight-list/);
+  assert.doesNotMatch(html, /resume-qualification-list/);
   assert.doesNotMatch(html, /resume-contact-list/);
+  assert.doesNotMatch(html, /resume-detail-list/);
   assert.doesNotMatch(html, /resume-basic-info/);
   assert.doesNotMatch(html, /basic-info-item/);
 });
@@ -76,10 +91,20 @@ test('renders optional profile fields inline only when supplied', () => {
     ''
   );
 
-  assert.match(html, /<span class="resume-contact-item"><span>性别：男<\/span><\/span>/);
-  assert.match(html, /<span class="resume-contact-item"><span>年龄：20<\/span><\/span>/);
+  assert.match(html, /<span class="resume-detail-item" aria-label="性别：男">男<\/span>/);
+  assert.match(html, /<span class="resume-detail-item" aria-label="年龄：20">20 岁<\/span>/);
   assert.doesNotMatch(html, /basic-info-/);
   assert.doesNotMatch(html, />电话<\/span>/);
+});
+
+test('uses city as the primary location fallback and keeps only distinct location details', () => {
+  const cityOnly = buildResumeHTML({ name: 'DC', city: '杭州' }, '');
+  const distinct = buildResumeHTML({ name: 'DC', location: '上海', city: '杭州' }, '');
+
+  assert.match(cityOnly, /resume-contact-location[\s\S]*>杭州<\/span>/);
+  assert.doesNotMatch(cityOnly, /aria-label="所在城市：杭州"/);
+  assert.match(distinct, /resume-contact-location[\s\S]*>上海<\/span>/);
+  assert.match(distinct, /aria-label="所在城市：杭州">杭州<\/span>/);
 });
 
 test('escapes every profile value', () => {
