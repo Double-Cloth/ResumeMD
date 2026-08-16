@@ -219,6 +219,12 @@
     renderTimer = window.setTimeout(renderDocument, 120);
   }
 
+  function flushPendingRender() {
+    if (renderTimer) {
+      renderDocument();
+    }
+  }
+
   function replaceSource(source, message, createBackup) {
     const backupResult = createBackup ? draftHistory.snapshot(editor.value) : { ok: true };
     editor.value = String(source == null ? '' : source);
@@ -333,6 +339,12 @@
   }
 
   editor.addEventListener('input', scheduleRender);
+  window.addEventListener('pagehide', flushPendingRender);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') {
+      flushPendingRender();
+    }
+  });
 
   document.getElementById('import-button').addEventListener('click', function () {
     fileInput.click();

@@ -181,6 +181,14 @@ test('app runtime guards localStorage, counts Unicode characters, and refreshes 
   assert.match(app, /renderDocument\(\);\s*const frontMatter = api\.parseFrontMatter\(editor\.value\);/);
 });
 
+test('pending edits flush before the page is hidden or left', () => {
+  const app = read('js/app.js');
+
+  assert.match(app, /function flushPendingRender\(\)[\s\S]*if \(renderTimer\)[\s\S]*renderDocument\(\)/);
+  assert.match(app, /window\.addEventListener\('pagehide', flushPendingRender\)/);
+  assert.match(app, /document\.addEventListener\('visibilitychange',[\s\S]*document\.visibilityState === 'hidden'[\s\S]*flushPendingRender\(\)/);
+});
+
 test('responsive toolbar stays on one row and switches tablets to focused panes', () => {
   const css = read('css/app.css');
 
