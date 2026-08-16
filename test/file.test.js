@@ -16,12 +16,18 @@ test('accepts Markdown and plain-text files within the size limit', () => {
 
 test('rejects unsupported and oversized imports', () => {
   const unsupported = validateImportFile({ name: 'resume.png', type: 'image/png', size: 100 });
+  const missingType = validateImportFile({ name: 'resume.exe', type: '', size: 100 });
+  const mismatchedType = validateImportFile({ name: 'resume.md', type: 'text/html', size: 100 });
   const htmlText = validateImportFile({ name: 'resume.html', type: 'text/html', size: 100 });
   const svgText = validateImportFile({ name: 'avatar.svg', type: 'image/svg+xml', size: 100 });
   const oversized = validateImportFile({ name: 'resume.md', type: 'text/markdown', size: MAX_IMPORT_BYTES + 1 });
 
   assert.equal(unsupported.ok, false);
   assert.match(unsupported.error, /Markdown 或纯文本/);
+  assert.equal(missingType.ok, false);
+  assert.match(missingType.error, /Markdown 或纯文本/);
+  assert.equal(mismatchedType.ok, false);
+  assert.match(mismatchedType.error, /Markdown 或纯文本/);
   assert.equal(htmlText.ok, false);
   assert.match(htmlText.error, /Markdown 或纯文本/);
   assert.equal(svgText.ok, false);
@@ -38,11 +44,17 @@ test('accepts supported image uploads within the size limit', () => {
 
 test('rejects unsupported and oversized image uploads', () => {
   const svg = validateImageFile({ name: 'avatar.svg', type: 'image/svg+xml', size: 100 });
+  const missingType = validateImageFile({ name: 'avatar.exe', type: '', size: 100 });
+  const mismatchedType = validateImageFile({ name: 'avatar.png', type: 'image/svg+xml', size: 100 });
   const text = validateImageFile({ name: 'avatar.txt', type: 'text/plain', size: 100 });
   const oversized = validateImageFile({ name: 'photo.png', type: 'image/png', size: MAX_IMAGE_BYTES + 1 });
 
   assert.equal(svg.ok, false);
   assert.match(svg.error, /JPG、PNG、WebP 或 GIF/);
+  assert.equal(missingType.ok, false);
+  assert.match(missingType.error, /JPG、PNG、WebP 或 GIF/);
+  assert.equal(mismatchedType.ok, false);
+  assert.match(mismatchedType.error, /JPG、PNG、WebP 或 GIF/);
   assert.equal(text.ok, false);
   assert.match(text.error, /JPG、PNG、WebP 或 GIF/);
   assert.equal(oversized.ok, false);

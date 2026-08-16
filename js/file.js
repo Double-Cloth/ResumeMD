@@ -33,7 +33,7 @@
     const supportedExtension = /\.(?:md|markdown|txt)$/i.test(name);
     const supportedType = !type || type === 'text/markdown' || type === 'text/plain';
 
-    if (!supportedExtension && !supportedType) {
+    if (!supportedExtension || !supportedType) {
       return { ok: false, error: '仅支持 Markdown 或纯文本文件。' };
     }
 
@@ -54,7 +54,7 @@
     const supportedExtension = IMAGE_EXTENSIONS.test(name);
     const supportedType = !type || Boolean(IMAGE_TYPES[type]);
 
-    if (!supportedExtension && !supportedType) {
+    if (!supportedExtension || !supportedType) {
       return { ok: false, error: '仅支持 JPG、PNG、WebP 或 GIF 图片。' };
     }
 
