@@ -189,3 +189,18 @@ test('runtime files contain no external dependency or fetch call', () => {
   assert.doesNotMatch(runtime, /@import\s+url\(\s*["']?https?:\/\//i);
   assert.doesNotMatch(runtime, /\bfetch\s*\(/);
 });
+
+test('bundled photo references resolve to existing local files', () => {
+  const files = ['README.md', 'index.html', 'examples/example-resume.md', 'js/assist.js'];
+
+  files.forEach((relativePath) => {
+    const source = read(relativePath);
+    const references = Array.from(source.matchAll(/photo:\s*(?!data:|resumemd-photo)([^\s"'`]+)/g));
+
+    references.forEach((match) => {
+      const photoPath = path.resolve(root, match[1]);
+      assert.ok(photoPath.startsWith(root + path.sep), relativePath + ' 包含工作区外的照片路径：' + match[1]);
+      assert.ok(fs.existsSync(photoPath), relativePath + ' 引用了不存在的照片：' + match[1]);
+    });
+  });
+});

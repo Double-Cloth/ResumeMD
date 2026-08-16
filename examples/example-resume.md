@@ -7,7 +7,7 @@ location: 上海
 website: https://github.com/example
 education: 本科在读
 experience: 2 年项目经验
-photo: examples/example.jpg
+photo: examples/example.png
 gender: 男
 age: 21
 birth: 2005.06

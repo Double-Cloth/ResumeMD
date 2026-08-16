@@ -206,7 +206,8 @@ markdown-resume/
 ├── dist/
 │   └── photo.jpg
 ├── examples/
-│   └── example-resume.md
+│   ├── example-resume.md
+│   └── example.png
 ├── test/
 ├── package.json
 └── README.md
