@@ -11,9 +11,9 @@ const {
 test('renders a semantic resume header with contacts, qualifications, details, photo, and body', () => {
   const html = buildResumeHTML(
     {
-      name: '张同学',
+      name: '示例用户',
       title: '软件开发实习生',
-      photo: 'dist/photo.jpg',
+      photo: 'examples/example.png',
       phone: '138 0000 0000',
       email: 'resume@example.com',
       location: '上海',
@@ -22,8 +22,8 @@ test('renders a semantic resume header with contacts, qualifications, details, p
       experience: '3 年项目经验',
       gender: '男',
       age: '21',
-      birth: '2005.06',
-      political: '共青团员',
+      birth: '2000.01',
+      political: '群众',
       city: '上海',
     },
     '<section class="resume-section"><h2>教育背景</h2></section>'
@@ -32,9 +32,9 @@ test('renders a semantic resume header with contacts, qualifications, details, p
   assert.match(html, /<header class="resume-header resume-header-has-photo">/);
   assert.match(html, /<div class="resume-header-main">/);
   assert.match(html, /<div class="resume-identity">/);
-  assert.match(html, /<h1>张同学<\/h1>/);
+  assert.match(html, /<h1>示例用户<\/h1>/);
   assert.match(html, /<p class="resume-title">软件开发实习生<\/p>/);
-  assert.match(html, /<div class="resume-photo-block"><img class="resume-photo" src="dist\/photo\.jpg" alt="张同学"><\/div>/);
+  assert.match(html, /<div class="resume-photo-block"><img class="resume-photo" src="examples\/example\.png" alt="示例用户"><\/div>/);
   assert.match(html, /<div class="resume-contact-list" aria-label="联系方式">/);
   assert.match(html, /<div class="resume-qualification-list" aria-label="核心资历">/);
   assert.match(html, /<span class="resume-qualification-label">最高学历<\/span><strong>本科在读<\/strong>/);
@@ -50,8 +50,8 @@ test('renders a semantic resume header with contacts, qualifications, details, p
   assert.match(html, /<div class="resume-detail-list">/);
   assert.match(html, /aria-label="性别：男">男<\/span>/);
   assert.match(html, /aria-label="年龄：21">21 岁<\/span>/);
-  assert.match(html, /aria-label="出生日期：2005\.06">2005\.06<\/span>/);
-  assert.match(html, /aria-label="政治面貌：共青团员">共青团员<\/span>/);
+  assert.match(html, /aria-label="出生日期：2000\.01">2000\.01<\/span>/);
+  assert.match(html, /aria-label="政治面貌：群众">群众<\/span>/);
   assert.doesNotMatch(html, /aria-label="所在城市：上海"/);
   assert.doesNotMatch(html, /resume-header-right/);
   assert.doesNotMatch(html, /resume-basic-info/);
@@ -69,9 +69,9 @@ test('renders a semantic resume header with contacts, qualifications, details, p
 });
 
 test('omits empty profile fields instead of rendering placeholders', () => {
-  const html = buildResumeHTML({ name: 'DC', title: '', phone: '', email: '' }, '<p>正文</p>');
+  const html = buildResumeHTML({ name: '示例用户', title: '', phone: '', email: '' }, '<p>正文</p>');
 
-  assert.match(html, /<h1>DC<\/h1>/);
+  assert.match(html, /<h1>示例用户<\/h1>/);
   assert.doesNotMatch(html, /resume-title/);
   assert.doesNotMatch(html, /resume-highlight-list/);
   assert.doesNotMatch(html, /resume-qualification-list/);
@@ -84,7 +84,7 @@ test('omits empty profile fields instead of rendering placeholders', () => {
 test('renders optional profile fields inline only when supplied', () => {
   const html = buildResumeHTML(
     {
-      name: 'DC',
+      name: '示例用户',
       gender: '男',
       age: '20',
     },
@@ -98,8 +98,8 @@ test('renders optional profile fields inline only when supplied', () => {
 });
 
 test('uses city as the primary location fallback and keeps only distinct location details', () => {
-  const cityOnly = buildResumeHTML({ name: 'DC', city: '杭州' }, '');
-  const distinct = buildResumeHTML({ name: 'DC', location: '上海', city: '杭州' }, '');
+  const cityOnly = buildResumeHTML({ name: '示例用户', city: '杭州' }, '');
+  const distinct = buildResumeHTML({ name: '示例用户', location: '上海', city: '杭州' }, '');
 
   assert.match(cityOnly, /resume-contact-location[\s\S]*>杭州<\/span>/);
   assert.doesNotMatch(cityOnly, /aria-label="所在城市：杭州"/);
@@ -124,18 +124,18 @@ test('escapes every profile value', () => {
 });
 
 test('rejects unsafe website schemes', () => {
-  const html = buildResumeHTML({ name: 'DC', website: 'javascript:alert(1)' }, '');
+  const html = buildResumeHTML({ name: '示例用户', website: 'javascript:alert(1)' }, '');
 
   assert.doesNotMatch(html, /javascript:/i);
   assert.doesNotMatch(html, /resume-contact-item/);
 });
 
 test('renders only safe local photo paths', () => {
-  const safeHTML = buildResumeHTML({ name: 'DC', photo: './dist/photo.webp' }, '');
-  const unsafeHTML = buildResumeHTML({ name: 'DC', photo: 'javascript:alert(1)' }, '');
-  const remoteHTML = buildResumeHTML({ name: 'DC', photo: 'https://example.com/photo.jpg' }, '');
+  const safeHTML = buildResumeHTML({ name: '示例用户', photo: './assets/avatar.webp' }, '');
+  const unsafeHTML = buildResumeHTML({ name: '示例用户', photo: 'javascript:alert(1)' }, '');
+  const remoteHTML = buildResumeHTML({ name: '示例用户', photo: 'https://example.com/photo.jpg' }, '');
 
-  assert.match(safeHTML, /<img class="resume-photo" src="\.\/dist\/photo\.webp" alt="DC">/);
+  assert.match(safeHTML, /<img class="resume-photo" src="\.\/assets\/avatar\.webp" alt="示例用户">/);
   assert.doesNotMatch(unsafeHTML, /resume-photo/);
   assert.doesNotMatch(unsafeHTML, /javascript:/i);
   assert.doesNotMatch(remoteHTML, /resume-photo/);
@@ -143,7 +143,7 @@ test('renders only safe local photo paths', () => {
 
 test('normalizes safe photo paths and rejects unsafe or non-image paths', () => {
   const dataURL = 'data:image/png;base64,iVBORw0KGgo=';
-  assert.equal(normalizePhotoURL('dist/photo.jpg'), 'dist/photo.jpg');
+  assert.equal(normalizePhotoURL('examples/example.png'), 'examples/example.png');
   assert.equal(normalizePhotoURL('./photo.png'), './photo.png');
   assert.equal(normalizePhotoURL('../assets/photo.webp'), '../assets/photo.webp');
   assert.equal(normalizePhotoURL('/images/photo.jpeg'), '/images/photo.jpeg');
@@ -170,7 +170,7 @@ test('normalizes web addresses while preserving explicit HTTP or HTTPS', () => {
 });
 
 test('creates a filesystem-safe Markdown filename', () => {
-  assert.equal(makeExportFilename('张同学'), '张同学-简历.md');
-  assert.equal(makeExportFilename('DC / Frontend:*?'), 'DC-Frontend-简历.md');
+  assert.equal(makeExportFilename('示例用户'), '示例用户-简历.md');
+  assert.equal(makeExportFilename('示例用户 / Frontend:*?'), '示例用户-Frontend-简历.md');
   assert.equal(makeExportFilename('   '), 'resume.md');
 });

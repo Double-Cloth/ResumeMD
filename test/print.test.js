@@ -9,18 +9,18 @@ const {
 
 test('creates a safe standalone A4 print document', () => {
   const html = buildPrintDocument({
-    title: 'DC <前端>',
-    resumeHTML: '<header class="resume-header"><h1>DC</h1></header>',
+    title: '示例用户 <前端>',
+    resumeHTML: '<header class="resume-header"><h1>示例用户</h1></header>',
     styles: '.resume-paper { width: 210mm; }',
     stylesheetURLs: ['file:///project/css/resume.css'],
   });
 
   assert.match(html, /^<!doctype html>/i);
-  assert.match(html, /<title>DC &lt;前端&gt;-简历<\/title>/);
+  assert.match(html, /<title>示例用户 &lt;前端&gt;-简历<\/title>/);
   assert.match(html, /<style>\.resume-paper \{ width: 210mm; \}<\/style>/);
   assert.match(html, /href="file:\/\/\/project\/css\/resume\.css"/);
   assert.match(html, /<article class="resume-paper">/);
-  assert.match(html, /<h1>DC<\/h1>/);
+  assert.match(html, /<h1>示例用户<\/h1>/);
   assert.doesNotMatch(html, /app-shell|markdown-editor/);
 });
 
@@ -60,6 +60,6 @@ test('collects readable CSS rules from selected stylesheets only', () => {
 });
 
 test('creates a useful default PDF filename title', () => {
-  assert.equal(makePrintTitle(' 童同学 '), '童同学-简历');
+  assert.equal(makePrintTitle(' 示例用户 '), '示例用户-简历');
   assert.equal(makePrintTitle(''), '简历');
 });

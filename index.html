@@ -142,49 +142,49 @@
       <div class="syntax-dialog-content">
         <section class="syntax-guide-section syntax-guide-section-wide">
           <h3>个人信息：Front Matter</h3>
-          <p>个人信息必须写在文档开头，并用两行 <code>---</code> 包裹。空字段会自动隐藏。</p>
+          <p>个人信息必须写在文档开头，并用两行 <code>---</code> 包裹。以下均为虚构占位内容，空字段会自动隐藏。</p>
           <pre><code>---
-name: 童同学
-title: 软件开发实习生
-phone: 138 0000 0000
+name: 示例用户
+title: 软件开发工程师
+phone: 000-0000-0000
 email: resume@example.com
-location: 上海
-website: https://github.com/example
-education: 本科在读
-experience: 2 年项目经验
-gender: 男
-age: 21
-birth: 2005.06
-political: 共青团员
-city: 上海
-photo: examples/example.png
+location: 所在城市
+website: https://example.com
+education: 本科
+experience: 3 年相关经验
+gender:
+age:
+birth:
+political:
+city:
+photo:
 ---</code></pre>
         </section>
 
         <section class="syntax-guide-section">
           <h3>章节与条目</h3>
           <p><code>##</code> 创建简历章节，<code>###</code> 创建章节中的经历条目。</p>
-          <pre><code>## 实习经历
+          <pre><code>## 工作经历
 
-### 星河科技｜前端开发实习生
+### 示例科技有限公司｜软件开发工程师
 
-- 完成数据看板和表格模块
-- 补充异常状态与测试</code></pre>
+- 负责核心业务模块开发
+- 补充异常状态和自动化测试</code></pre>
         </section>
 
         <section class="syntax-guide-section">
           <h3>日期与标题层级</h3>
           <p>日期需紧跟 <code>###</code>，单独一行并用反引号包裹。全角 <code>｜</code> 会将主体与说明分层显示。</p>
-          <pre><code>### 同济大学｜软件工程｜本科
+          <pre><code>### 示例大学｜计算机相关专业｜本科
 
-`2024.09 - 2028.06`</code></pre>
+`20XX.09 - 20XX.06`</code></pre>
         </section>
 
         <section class="syntax-guide-section syntax-guide-section-wide">
           <h3>正文格式</h3>
           <p>支持无序/有序列表、<strong>粗体</strong>、<em>斜体</em>、行内代码和安全链接。原始 HTML 会按普通文本处理。</p>
           <pre><code>- **技术栈：** JavaScript、CSS、Node.js
-- 项目地址：[github.com/example](https://github.com/example)
+- 作品地址：[example.com](https://example.com)
 1. 需求分析
 2. 开发与测试</code></pre>
         </section>
@@ -201,163 +201,92 @@ photo: examples/example.png
   <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif" hidden>
 
   <script id="example-source" type="text/plain">---
-name: 童同学
-title: 软件开发实习生
-phone: 138 0000 0000
+name: 示例用户
+title: 软件开发工程师
+phone: 000-0000-0000
 email: resume@example.com
-location: 上海
-website: https://github.com/example
-education: 本科在读
-experience: 2 年项目经验
-photo: examples/example.png
-gender: 男
-age: 21
-birth: 2005.06
-political: 共青团员
-city: 上海
+location: 所在城市
+website: https://example.com
+education: 本科
+experience: 3 年相关经验
 ---
 
-## 教育背景
+## 个人概述
 
-### 同济大学｜软件工程｜本科
+- 具备从需求分析、功能实现到测试交付的完整软件开发经验。
+- 注重代码质量、用户体验和团队协作，能够独立推进任务并及时同步风险。
+- 以下经历均为虚构占位内容，请根据目标岗位替换为自己的真实成果。
 
-`2024.09 - 2028.06`
+## 工作经历
 
-- **专业成绩：** GPA 4.7/5.0，专业排名前 15%。
-- **主修课程：** 数据结构、算法设计与分析、操作系统、计算机网络、数据库系统、软件工程、人工智能基础。
-- **英语水平：** 大学英语四级、六级，能够阅读英文技术文档。
-- **在校经历：** 参与学院科创项目，负责需求分析、核心开发和项目展示。
+### 示例科技有限公司｜软件开发工程师
 
-## 实习经历
+`20XX.07 - 至今`
 
-### 星河科技有限公司｜前端开发实习生
+- 负责核心业务模块的需求拆解、方案设计和功能交付，持续维护稳定性与可用性。
+- 与产品、设计和测试协作完善异常状态、权限控制和数据校验，降低线上问题率。
+- 通过缓存、请求合并和渲染优化缩短关键页面响应时间，并建立可复用的性能检查流程。
+- 参与代码评审、版本发布和故障复盘，推动公共组件与开发规范持续完善。
 
-`2026.06 - 2026.09`
+### 示例服务有限公司｜开发实习生
 
-- 使用 React、TypeScript 开发企业数据分析平台，完成数据看板、筛选器、表格和权限管理等模块。
-- 封装表单、弹窗、分页和状态提示等通用组件，减少重复代码并统一交互行为。
-- 通过按需加载、请求合并和长列表分片渲染优化页面性能，使核心页面加载速度提升约 30%。
-- 与后端协作完成接口联调，补充异常处理、空状态和重复提交保护。
-- 参与代码评审、测试验证和版本发布，使用 Git 进行分支协作。
+`20XX.06 - 20XX.09`
 
-### 云杉智能工作室｜全栈开发实习生
-
-`2025.12 - 2026.03`
-
-- 负责校园活动管理系统的功能开发，完成活动发布、报名审核、签到统计和数据导出。
-- 使用 FastAPI 开发后端接口，并通过 PostgreSQL 管理用户、活动和报名数据。
-- 为高频查询添加分页与索引，将活动列表接口的平均响应时间由 420 ms 降低至 160 ms。
-- 使用 Docker 部署测试环境，并配置反向代理与 HTTPS。
+- 参与业务管理后台开发，完成表单、列表、筛选和数据导出等常用功能。
+- 对接后端接口并补充加载、空数据和失败重试状态，提升操作反馈的完整性。
+- 编写单元测试和使用文档，协助团队完成联调与上线验证。
 
 ## 项目经历
 
-### ResumeMD｜离线 Markdown 简历生成器
+### 业务管理平台｜全栈开发
 
-`2026.03 - 至今`
+`20XX.03 - 20XX.08`
 
-- **项目地址：** [github.com/example/resume-md](https://github.com/example/resume-md)
-- **技术栈：** JavaScript、CSS、Node.js、Web Storage、浏览器打印 API。
-- 独立设计并实现完全离线的 Markdown 简历生成器，支持 Front Matter、实时 A4 预览、多页分页和 PDF 打印。
-- 编写轻量 Markdown 解析器，支持标题、列表、粗体、斜体、行内代码和安全链接。
-- 实现 HTML 转义、链接协议白名单和头像路径白名单，避免执行不安全的用户输入。
-- 支持导入、导出 Markdown 文件，并通过 localStorage 自动保存编辑内容。
-- 使用 Node.js 原生测试覆盖 Front Matter、Markdown 渲染、分页、文件校验和本地存储。
+- **项目地址：** [example.com/project](https://example.com/project)
+- **技术栈：** JavaScript、CSS、Node.js、SQL、Docker。
+- 设计并实现账户、权限、数据查询和操作记录模块，覆盖常见桌面与移动端场景。
+- 为高频查询补充分页、索引和缓存策略，并通过自动化测试验证关键业务流程。
+- 使用容器化方式统一开发与测试环境，整理部署说明和故障排查清单。
 
-### Whalgebra｜高精度科学计算器
+### 数据分析工具｜个人练习项目
 
-`2024.07 - 至今`
+`20XX.01 - 20XX.04`
 
-- **项目地址：** [github.com/example/whalgebra](https://github.com/example/whalgebra)
-- **技术栈：** HTML、CSS、JavaScript、Web Worker、Canvas。
-- 独立开发离线科学计算器，实现表达式解析、复数运算、函数分析和高精度数值计算。
-- 设计词法分析、运算符优先级和后缀表达式执行流程，支持隐式乘法和多参数函数。
-- 使用 Web Worker 执行复杂计算，避免主线程阻塞并提升界面响应速度。
-- 针对大量结果实现分片渲染和懒加载，降低长列表场景中的卡顿。
-- 建立自动化测试和持续集成流程，对核心计算与构建工具进行回归验证。
+- **项目地址：** [example.com/demo](https://example.com/demo)
+- **技术栈：** TypeScript、Web Worker、Canvas。
+- 完成数据导入、筛选、统计和可视化功能，并为大数据量场景增加分片处理。
+- 将复杂计算移至后台线程，避免阻塞界面交互，并补充边界数据测试。
 
-### 校园活动服务平台｜课程团队项目
+## 教育背景
 
-`2025.03 - 2025.07`
+### 示例大学｜计算机相关专业｜本科
 
-- **技术栈：** Vue、TypeScript、Node.js、PostgreSQL、Docker。
-- 负责前端架构和活动报名模块，完成活动检索、报名表单、个人日程和消息提醒。
-- 设计统一的请求封装和状态管理方案，处理登录失效、网络超时和重复提交。
-- 使用 Docker Compose 编排前端、后端和数据库服务，降低团队环境配置成本。
-- 项目在课程答辩中获得优秀评价。
+`20XX.09 - 20XX.06`
+
+- **主修课程：** 数据结构、操作系统、计算机网络、数据库系统、软件工程。
+- **学习实践：** 参与课程团队项目，负责需求分析、核心开发和项目演示。
 
 ## 专业技能
 
-### 编程与计算机基础
+### 编程与开发
 
-- 掌握 C、C++、JavaScript、TypeScript、Python 和 SQL。
-- 熟练使用 C++ 标准模板库，掌握常用数据结构与算法。
-- 理解操作系统、计算机网络和数据库系统的基础原理。
-
-### Web 开发
-
-- 熟悉 HTML、CSS、React、Vue 和组件化开发。
-- 能够使用 FastAPI、Node.js 开发后端接口。
-- 具备 PostgreSQL 使用经验，理解索引、事务和锁机制。
+- 熟悉 JavaScript、TypeScript、HTML、CSS、Python 和 SQL。
+- 能够使用主流前端框架与 Node.js 完成常见 Web 应用开发。
+- 理解数据结构、网络、数据库和浏览器运行机制等基础知识。
 
 ### 工程实践
 
-- 能够使用 Git、Docker 和 Linux 常用命令。
-- 具备自动化测试、性能分析、持续集成和生产环境部署经验。
-- 能够编写 README、开发文档、测试说明和问题复现报告。
-
-### 人工智能
-
-- 理解机器学习、大语言模型和提示工程的基本原理。
-- 能够使用 PyTorch 完成基础模型训练与推理。
-- 具备模型 API 接入、LoRA 微调和本地模型部署实践经验。
-
-## 荣誉奖项
-
-### 全国大学生计算机设计大赛｜省级二等奖
-
-`2026.05`
-
-- 作为项目负责人完成系统设计、核心开发、演示材料制作和现场答辩。
-
-### 同济大学优秀学生奖学金｜二等奖
-
-`2025.11`
-
-- 综合成绩位于专业前列，在课程学习和项目实践方面表现突出。
-
-### 校级程序设计竞赛｜一等奖
-
-`2025.06`
-
-- 完成图搜索、动态规划和数据结构相关算法题目。
-
-## 校园经历
-
-### 学院科创中心｜项目组负责人
-
-`2025.09 - 至今`
-
-- 组织 6 人项目组进行需求讨论、任务拆分、代码评审和阶段汇报。
-- 制定开发计划并跟踪任务进度，及时处理依赖、风险和延期问题。
-- 为新成员提供 Git、前端开发和项目规范培训。
-
-## 开源与技术写作
-
-### 个人开源项目维护
-
-`2025.01 - 至今`
-
-- 持续维护个人 GitHub 项目，使用 Issue、Pull Request 和 Release 管理需求、缺陷和版本。
-- 编写项目说明、开发文档和测试报告，清晰记录环境、复现步骤和验证结果。
-- 关注 Web 性能、浏览器兼容性和高精度计算，并通过基准测试持续优化项目。
+- 能够使用 Git、Docker、Linux 和持续集成工具完成团队协作与交付。
+- 具备自动化测试、性能分析、错误监控和问题复现能力。
+- 能够编写 README、接口说明、测试记录和上线检查清单。
 
 ---
 
 ## 自我评价
 
-- 具备从需求分析、功能实现、测试验证到部署发布的完整项目实践。
-- 具有较强的问题定位和自主学习能力，能够通过日志、最小复现和性能分析解决复杂问题。
-- 重视代码质量、团队协作和交付节奏，能够主动同步风险并根据反馈快速改进。</script>
+- 保持主动沟通和持续学习，能够快速理解业务背景并拆解可执行任务。
+- 重视稳定性与可维护性，习惯通过测试、日志和复盘降低重复问题。
+- 请删除本条提示，并将所有示例内容替换为可验证、可量化的个人经历。</script>
 
   <script defer src="js/frontmatter.js"></script>
   <script defer src="js/markdown.js"></script>

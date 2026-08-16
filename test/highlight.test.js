@@ -6,7 +6,7 @@ const { highlightMarkdown } = require('../js/highlight.js');
 test('highlights Front Matter fields, headings, and list markers', () => {
   const html = highlightMarkdown([
     '---',
-    'name: 童同学',
+    'name: 示例用户',
     'website: https://example.com',
     '---',
     '## 项目经历',

@@ -65,6 +65,22 @@ test('index provides the editor, preview, toolbar actions, and embedded example'
   assert.ok(fs.existsSync(path.join(root, 'favicon.svg')));
 });
 
+test('embedded and downloadable examples stay synchronized and contain only generic placeholders', () => {
+  const html = read('index.html');
+  const standalone = read('examples/example-resume.md').trim();
+  const embeddedMatch = html.match(/<script id="example-source" type="text\/plain">([\s\S]*?)<\/script>/);
+  const publicExamples = [html, standalone, read('README.md'), read('js/assist.js')].join('\n');
+
+  assert.ok(embeddedMatch);
+  assert.equal(embeddedMatch[1].trim(), standalone);
+  assert.match(standalone, /^---\nname: 示例用户\ntitle: 软件开发工程师/m);
+  assert.match(standalone, /以下经历均为虚构占位内容/);
+  assert.doesNotMatch(standalone, /^photo:/m);
+  assert.doesNotMatch(publicExamples, /^gender:[ \t]*\S+/m);
+  assert.doesNotMatch(publicExamples, /^birth:[ \t]*\d{4}/m);
+  assert.doesNotMatch(publicExamples, /^political:[ \t]*\S+/m);
+});
+
 test('classic scripts load in dependency order and avoid ES modules', () => {
   const html = read('index.html');
   const expectedOrder = [
@@ -104,7 +120,8 @@ test('syntax help documents project-specific Markdown rules in an accessible dia
 
   assert.match(html, /<h2 id="syntax-help-title">ResumeMD 语法说明<\/h2>/);
   assert.match(html, /个人信息：Front Matter/);
-  assert.match(html, /gender: 男[\s\S]*age: 21[\s\S]*birth: 2005\.06[\s\S]*political: 共青团员[\s\S]*city: 上海/);
+  assert.match(html, /name: 示例用户[\s\S]*gender:\s*\nage:\s*\nbirth:\s*\npolitical:\s*\ncity:\s*\nphoto:/);
+  assert.match(html, /以下均为虚构占位内容/);
   assert.match(html, /<code>##<\/code> 创建简历章节，<code>###<\/code> 创建章节中的经历条目/);
   assert.match(html, /全角 <code>｜<\/code> 会将主体与说明分层显示/);
   assert.match(html, /原始 HTML 会按普通文本处理/);
@@ -319,11 +336,14 @@ test('resume header uses ordered identity, contact, qualification, detail, and p
 test('resume typography keeps the header readable and section accents restrained', () => {
   const css = read('css/resume.css');
 
-  assert.match(css, /\.resume-header h1\s*{[\s\S]*?font-size:\s*30px/);
-  assert.match(css, /\.resume-title\s*{[\s\S]*?font-size:\s*14px/);
-  assert.match(css, /\.resume-contact-list\s*{[\s\S]*?font-size:\s*11\.5px/);
-  assert.match(css, /\.resume-detail-list\s*{[\s\S]*?font-size:\s*11px/);
+  assert.match(css, /\.resume-header h1\s*{[\s\S]*?color:\s*#111318;[\s\S]*?font-size:\s*30px/);
+  assert.match(css, /\.resume-title\s*{[\s\S]*?color:\s*#20242b;[\s\S]*?font-size:\s*14px/);
+  assert.match(css, /\.resume-contact-list\s*{[\s\S]*?color:\s*#272c33;[\s\S]*?font-size:\s*11\.5px/);
+  assert.match(css, /\.resume-detail-list\s*{[\s\S]*?color:\s*#343a43;[\s\S]*?font-size:\s*11px/);
   assert.match(css, /\.resume-section h2\s*{[\s\S]*?border-bottom:\s*1px solid #a1b8b5;[\s\S]*?color:\s*#245f5a/);
+  ['#111318', '#20242b', '#272c33', '#343a43'].forEach((color) => {
+    assert.ok(contrastRatio(color, '#ffffff') >= 7);
+  });
 });
 
 test('runtime files contain no external dependency or fetch call', () => {
@@ -347,7 +367,7 @@ test('bundled photo references resolve to existing local files', () => {
 
   files.forEach((relativePath) => {
     const source = read(relativePath);
-    const references = Array.from(source.matchAll(/photo:\s*(?!data:|resumemd-photo)([^\s"'`]+)/g));
+    const references = Array.from(source.matchAll(/^photo:[ \t]+(?!data:|resumemd-photo)([^\s"'`]+)/gm));
 
     references.forEach((match) => {
       const photoPath = path.resolve(root, match[1]);

@@ -63,21 +63,21 @@ test('allows web, mail, phone, anchor, and safe relative URLs', () => {
 });
 
 test('pairs a level-three heading with a following inline-code-only date', () => {
-  const blocks = parseMarkdown('### Whalgebra｜独立开发者\n\n`2022.01 - 至今`\n\n- 完成离线计算器');
+  const blocks = parseMarkdown('### 示例工具｜独立开发者\n\n`20XX.01 - 至今`\n\n- 完成离线计算器');
   const html = renderBlocks(blocks);
 
   assert.match(html, /<div class="resume-entry-heading">/);
-  assert.match(html, /<h3><span class="resume-entry-primary">Whalgebra<\/span><span class="resume-entry-secondary">｜独立开发者<\/span><\/h3>/);
-  assert.match(html, /<time>2022\.01 - 至今<\/time>/);
+  assert.match(html, /<h3><span class="resume-entry-primary">示例工具<\/span><span class="resume-entry-secondary">｜独立开发者<\/span><\/h3>/);
+  assert.match(html, /<time>20XX\.01 - 至今<\/time>/);
   assert.doesNotMatch(html, /<p><code>2022\.01 - 至今<\/code><\/p>/);
 });
 
 test('separates entry primary and secondary text while preserving inline safety', () => {
-  const blocks = parseMarkdown('### **同济大学**｜软件工程｜<本科>\n\n- 课程内容');
+  const blocks = parseMarkdown('### **示例大学**｜计算机相关专业｜<本科>\n\n- 课程内容');
   const html = renderBlocks(blocks);
 
-  assert.match(html, /<span class="resume-entry-primary"><strong>同济大学<\/strong><\/span>/);
-  assert.match(html, /<span class="resume-entry-secondary">｜软件工程｜&lt;本科&gt;<\/span>/);
+  assert.match(html, /<span class="resume-entry-primary"><strong>示例大学<\/strong><\/span>/);
+  assert.match(html, /<span class="resume-entry-secondary">｜计算机相关专业｜&lt;本科&gt;<\/span>/);
   assert.doesNotMatch(html, /<本科>/);
 });
 

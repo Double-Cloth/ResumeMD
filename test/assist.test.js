@@ -10,7 +10,7 @@ const {
 test('counts characters, words, sections, and pages from resume source', () => {
   const source = [
     '---',
-    'name: 童同学',
+    'name: 示例用户',
     '---',
     '',
     '## 教育背景',
@@ -23,8 +23,8 @@ test('counts characters, words, sections, and pages from resume source', () => {
   ].join('\n');
 
   assert.deepEqual(makeResumeStats(source, 2), {
-    characters: 82,
-    words: 22,
+    characters: 83,
+    words: 23,
     sections: 2,
     pages: 2,
   });

@@ -22,8 +22,8 @@ function makeStorage(result) {
 
 test('updates or creates a photo field in Front Matter', () => {
   assert.equal(
-    setFrontMatterField('---\nname: DC\n---\n正文', 'photo', 'resumemd-photo'),
-    '---\nname: DC\nphoto: resumemd-photo\n---\n正文'
+    setFrontMatterField('---\nname: 示例用户\n---\n正文', 'photo', 'resumemd-photo'),
+    '---\nname: 示例用户\nphoto: resumemd-photo\n---\n正文'
   );
   assert.equal(
     setFrontMatterField('正文', 'photo', 'photo.png'),
@@ -34,7 +34,7 @@ test('updates or creates a photo field in Front Matter', () => {
 test('migrates an inline photo only after separate storage succeeds', () => {
   const storage = makeStorage({ ok: true });
   const result = migrateInlinePhotoSource(
-    '---\nname: DC\nphoto: ' + dataURL + '\n---\n正文',
+    '---\nname: 示例用户\nphoto: ' + dataURL + '\n---\n正文',
     storage,
     'resumemd-photo'
   );
@@ -46,7 +46,7 @@ test('migrates an inline photo only after separate storage succeeds', () => {
 });
 
 test('keeps the original inline photo source when separate storage fails', () => {
-  const source = '\uFEFF---\r\nname: DC\r\nphoto: ' + dataURL + '\r\n---\r\n正文';
+  const source = '\uFEFF---\r\nname: 示例用户\r\nphoto: ' + dataURL + '\r\n---\r\n正文';
   const storage = makeStorage({ ok: false, error: new Error('quota') });
   const result = migrateInlinePhotoSource(source, storage, 'resumemd-photo');
 
@@ -58,7 +58,7 @@ test('keeps the original inline photo source when separate storage fails', () =>
 test('keeps a newly uploaded photo portable when separate storage fails', () => {
   const storage = makeStorage({ ok: false, error: new Error('blocked') });
   const result = prepareUploadedPhotoSource(
-    '---\nname: DC\nphoto: old.png\n---\n正文',
+    '---\nname: 示例用户\nphoto: old.png\n---\n正文',
     dataURL,
     storage,
     'resumemd-photo'
@@ -78,7 +78,7 @@ test('uses the compact photo reference when upload storage succeeds', () => {
 });
 
 test('embeds a stored photo when creating a portable export', () => {
-  const source = '---\nname: DC\nphoto: resumemd-photo\n---\n正文';
+  const source = '---\nname: 示例用户\nphoto: resumemd-photo\n---\n正文';
   const result = makePortablePhotoSource(source, dataURL, 'resumemd-photo');
 
   assert.match(result, new RegExp('photo: ' + dataURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));

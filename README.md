@@ -46,20 +46,22 @@ ResumeMD 是一个完全离线、无第三方依赖的 Markdown 简历生成器�
 
 ```markdown
 ---
-name: 童同学
-title: 软件开发实习生
-phone: 182 8888 8888
+name: 示例用户
+title: 软件开发工程师
+phone: 000-0000-0000
 email: resume@example.com
-location: 上海
-website: github.com/example
-education: 本科在读
-experience: 2 年项目经验
-photo: dist/photo.jpg
-birth: 2006.02
-political: 群众
-city: 上海
+location: 所在城市
+website: example.com
+education: 本科
+experience: 3 年相关经验
+photo:
+birth:
+political:
+city:
 ---
 ```
+
+以上内容均为虚构占位示例，请替换为自己的信息；不需要的字段可以留空或删除。
 
 支持字段：
 
@@ -73,12 +75,12 @@ city: 上海
 | `website` | 个人网站、GitHub 或作品集地址 |
 | `education` | 最高学历，例如“本科在读” |
 | `experience` | 相关经验，例如“2 年项目经验” |
-| `photo` | 头像路径，可选，例如 `dist/photo.jpg` |
+| `photo` | 头像路径，可选，例如 `examples/example.png` |
 | `gender` | 性别，可选 |
 | `age` | 年龄，可选 |
-| `birth` | 出生日期，例如 `2006.02` |
+| `birth` | 出生日期，例如 `20XX.01` |
 | `political` | 政治面貌，例如“群众” |
-| `city` | 所在城市，例如“上海” |
+| `city` | 所在城市，例如“所在城市” |
 
 简历页眉按信息层级自动整理：电话、邮箱、所在地和个人主页归入“联系方式”，`education` 与 `experience` 归入“核心资历”，性别、年龄、出生年月、政治面貌及其他字段归入“补充信息”。`location` 与 `city` 同值时会自动去重；未填写的分组和照片区域不会占用空间。
 
@@ -89,7 +91,7 @@ city: 上海
 推荐做法：
 
 ```markdown
-photo: dist/photo.jpg
+photo: examples/example.png
 ```
 
 限制说明：
@@ -97,7 +99,7 @@ photo: dist/photo.jpg
 - 不加载远程 URL，例如 `https://example.com/photo.jpg`。
 - 不支持 `.svg` 作为头像，避免脚本或外部资源风险。
 - 通过“上传照片”选择的 JPG、PNG、WebP 或 GIF 会优先单独保存在浏览器本地；若照片存储不可用，则以内嵌图片数据保留在当前 Markdown 中，避免形成无效引用。
-- 图片建议使用证件照比例，示例头像文件位于 `dist/photo.jpg`。
+- 图片建议使用证件照比例；仓库中的 `examples/example.png` 是不对应真实人物的插画示例。
 
 ## Markdown 写法
 
@@ -106,9 +108,9 @@ photo: dist/photo.jpg
 ```markdown
 ## 教育背景
 
-### 同济大学｜软件工程｜本科
+### 示例大学｜计算机相关专业｜本科
 
-`2024.09 - 2028.06`
+`20XX.09 - 20XX.06`
 
 - **专业成绩：** GPA 4.9/5.0，专业前 10%。
 - **主修课程：** 数据结构、操作系统、计算机网络。
@@ -154,7 +156,7 @@ photo: dist/photo.jpg
 
 - “导出 MD”生成 UTF-8 编码的 Markdown 文件。
 - 浏览器本地照片会自动转为内嵌数据，导出的 Markdown 可独立迁移。
-- 文件名优先使用 `name` 字段，例如 `童同学-简历.md`。
+- 文件名优先使用 `name` 字段，例如 `示例用户-简历.md`。
 - “打印 / PDF”会生成独立打印文档，避免编辑器界面混入 PDF。
 
 ## PDF 设置建议
@@ -207,8 +209,6 @@ markdown-resume/
 │   ├── print.js
 │   ├── renderer.js
 │   └── storage.js
-├── dist/
-│   └── photo.jpg
 ├── examples/
 │   ├── example-resume.md
 │   └── example.png
