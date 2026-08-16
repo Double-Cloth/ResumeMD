@@ -261,19 +261,23 @@
   }
 
   function exportSource() {
-    const frontMatter = api.parseFrontMatter(editor.value);
-    const usesStoredPhoto = String(frontMatter.data.photo || '').trim() === photoReference;
-    let photoDataURL = uploadedPhotoDataURL;
+    try {
+      const frontMatter = api.parseFrontMatter(editor.value);
+      const usesStoredPhoto = String(frontMatter.data.photo || '').trim() === photoReference;
+      let photoDataURL = uploadedPhotoDataURL;
 
-    if (usesStoredPhoto && !photoDataURL) {
-      const photoResult = photoStorage.load();
-      photoDataURL = photoResult.ok ? photoResult.value : null;
+      if (usesStoredPhoto && !photoDataURL) {
+        const photoResult = photoStorage.load();
+        photoDataURL = photoResult.ok ? photoResult.value : null;
+      }
+
+      const portableSource = api.makePortablePhotoSource(editor.value, photoDataURL, photoReference);
+      api.downloadMarkdown(portableSource, api.makeExportFilename(frontMatter.data.name));
+      const photoEmbedded = !usesStoredPhoto || portableSource !== editor.value;
+      setStatus(photoEmbedded ? 'Markdown 已导出' : 'Markdown 已导出，但照片未能打包', photoEmbedded ? 'saved' : 'error', photoEmbedded);
+    } catch (error) {
+      setStatus(error && error.message ? error.message : 'Markdown 导出失败', 'error');
     }
-
-    const portableSource = api.makePortablePhotoSource(editor.value, photoDataURL, photoReference);
-    api.downloadMarkdown(portableSource, api.makeExportFilename(frontMatter.data.name));
-    const photoEmbedded = !usesStoredPhoto || portableSource !== editor.value;
-    setStatus(photoEmbedded ? 'Markdown 已导出' : 'Markdown 已导出，但照片未能打包', photoEmbedded ? 'saved' : 'error', photoEmbedded);
   }
 
   function resolveProfilePhoto(profile) {

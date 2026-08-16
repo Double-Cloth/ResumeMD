@@ -176,6 +176,7 @@ test('app runtime guards localStorage, counts Unicode characters, and refreshes 
   assert.match(app, /api\.readImageFile\(file\)/);
   assert.match(app, /api\.prepareUploadedPhotoSource\(editor\.value, dataURL, photoStorage, photoReference\)/);
   assert.match(app, /api\.makePortablePhotoSource\(editor\.value, photoDataURL, photoReference\)/);
+  assert.match(app, /function exportSource\(\)[\s\S]*try \{[\s\S]*api\.downloadMarkdown[\s\S]*catch \(error\)[\s\S]*Markdown 导出失败/);
   assert.match(app, /function migrateInlinePhoto\(source\)/);
   assert.doesNotMatch(app, /getElementsByClassName\('resume-contact-item'\)\[0\]/);
   assert.match(app, /loaded\.value !== null/);

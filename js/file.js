@@ -121,20 +121,45 @@
       throw new Error('当前环境不支持文件导出。');
     }
 
-    const blob = new Blob([String(source == null ? '' : source)], {
-      type: 'text/markdown;charset=utf-8',
-    });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = filename || 'resume.md';
-    anchor.hidden = true;
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    window.setTimeout(function () {
-      URL.revokeObjectURL(url);
-    }, 0);
+    let url = null;
+    let anchor = null;
+
+    try {
+      const blob = new Blob([String(source == null ? '' : source)], {
+        type: 'text/markdown;charset=utf-8',
+      });
+      url = URL.createObjectURL(blob);
+      anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = filename || 'resume.md';
+      anchor.hidden = true;
+      document.body.appendChild(anchor);
+      anchor.click();
+    } finally {
+      if (anchor && typeof anchor.remove === 'function') {
+        try {
+          anchor.remove();
+        } catch (error) {
+          // 下载结果优先，清理失败不覆盖原始异常。
+        }
+      }
+
+      if (url && typeof URL.revokeObjectURL === 'function') {
+        const revoke = function () {
+          try {
+            URL.revokeObjectURL(url);
+          } catch (error) {
+            // 浏览器退出时回收失败无需阻断用户操作。
+          }
+        };
+
+        if (typeof window !== 'undefined' && typeof window.setTimeout === 'function') {
+          window.setTimeout(revoke, 0);
+        } else {
+          revoke();
+        }
+      }
+    }
   }
 
   return {

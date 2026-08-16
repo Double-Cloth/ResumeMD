@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const {
   MAX_IMAGE_BYTES,
   MAX_IMPORT_BYTES,
+  downloadMarkdown,
   validateImageFile,
   validateImportFile,
 } = require('../js/file.js');
@@ -59,4 +60,47 @@ test('rejects unsupported and oversized image uploads', () => {
   assert.match(text.error, /JPG、PNG、WebP 或 GIF/);
   assert.equal(oversized.ok, false);
   assert.match(oversized.error, /1 MiB/);
+});
+
+test('cleans up temporary download resources when clicking fails', () => {
+  const originals = {
+    Blob: global.Blob,
+    URL: global.URL,
+    document: global.document,
+    window: global.window,
+  };
+  let removed = false;
+  let revoked = null;
+
+  global.Blob = class BlobMock {};
+  global.URL = {
+    createObjectURL() {
+      return 'blob:resume';
+    },
+    revokeObjectURL(value) {
+      revoked = value;
+    },
+  };
+  global.document = {
+    body: { appendChild() {} },
+    createElement() {
+      return {
+        click() {
+          throw new Error('download blocked');
+        },
+        remove() {
+          removed = true;
+        },
+      };
+    },
+  };
+  global.window = { setTimeout(callback) { callback(); } };
+
+  try {
+    assert.throws(() => downloadMarkdown('resume', 'resume.md'), /download blocked/);
+    assert.equal(removed, true);
+    assert.equal(revoked, 'blob:resume');
+  } finally {
+    Object.assign(global, originals);
+  }
 });
