@@ -160,6 +160,14 @@ test('editor syntax highlight mirrors content and scrolling without replacing th
   assert.match(css, /\.markdown-highlight\s*\{[\s\S]*?pointer-events:\s*none/);
 });
 
+test('replacing a document resets both viewports and restores the bundled example photo', () => {
+  const app = read('js/app.js');
+
+  assert.match(app, /function resetDocumentViewport\(\)[\s\S]*?editor\.setSelectionRange\(0, 0\)[\s\S]*?editor\.scrollTop = 0[\s\S]*?editorHighlightLayer\.scrollTop = 0[\s\S]*?previewScroll\.scrollTop = 0/);
+  assert.match(app, /function replaceSource\(source, message, createBackup\)[\s\S]*?resetDocumentViewport\(\);[\s\S]*?renderDocument\(\)[\s\S]*?editor\.focus\(\{ preventScroll: true \}\);[\s\S]*?resetDocumentViewport\(\)/);
+  assert.match(app, /reset-button[\s\S]*?uploadedPhotoDataURL = null[\s\S]*?api\.setFrontMatterField\(exampleSource, 'photo', defaultExamplePhoto\)[\s\S]*?replaceSource\(restoredExampleSource, '已恢复示例', true\)/);
+});
+
 test('print stylesheet isolates an A4 resume page', () => {
   const html = read('index.html');
   const css = read('css/print.css');

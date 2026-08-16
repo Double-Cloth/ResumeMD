@@ -30,6 +30,7 @@
   const draftHistory = api.createDraftHistory(backupStorage);
   const photoStorage = api.createStorage(getStorageBackend(), 'resumemd.photo.v1');
   const photoReference = 'resumemd-photo';
+  const defaultExamplePhoto = 'examples/example.png';
   let renderTimer = null;
   let statusTimer = null;
   let uploadedPhotoDataURL = null;
@@ -117,6 +118,16 @@
   function updateEditorHighlight() {
     editorHighlight.innerHTML = api.highlightMarkdown(editor.value) + '\n';
     syncEditorHighlightScroll();
+  }
+
+  function resetDocumentViewport() {
+    editor.setSelectionRange(0, 0);
+    editor.scrollTop = 0;
+    editor.scrollLeft = 0;
+    editorHighlightLayer.scrollTop = 0;
+    editorHighlightLayer.scrollLeft = 0;
+    previewScroll.scrollTop = 0;
+    previewScroll.scrollLeft = 0;
   }
 
   function setPreviewZoom(value) {
@@ -210,6 +221,7 @@
   function replaceSource(source, message, createBackup) {
     const backupResult = createBackup ? draftHistory.snapshot(editor.value) : { ok: true };
     editor.value = String(source == null ? '' : source);
+    resetDocumentViewport();
     const saveResult = renderDocument();
 
     if (!backupResult.ok) {
@@ -219,7 +231,8 @@
     } else {
       setStatus(message, 'saved', true);
     }
-    editor.focus();
+    editor.focus({ preventScroll: true });
+    resetDocumentViewport();
   }
 
   function insertSelectedSnippet() {
@@ -447,7 +460,9 @@
 
   document.getElementById('reset-button').addEventListener('click', function () {
     if (window.confirm('恢复内置示例将覆盖当前内容，是否继续？')) {
-      replaceSource(exampleSource, '已恢复示例', true);
+      uploadedPhotoDataURL = null;
+      const restoredExampleSource = api.setFrontMatterField(exampleSource, 'photo', defaultExamplePhoto);
+      replaceSource(restoredExampleSource, '已恢复示例', true);
     }
   });
 
