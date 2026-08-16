@@ -84,6 +84,10 @@
 
         <footer class="editor-footer">
           <span id="editor-hint">Front Matter 管理个人信息，正文使用 Markdown。</span>
+          <button class="undo-button" id="undo-button" type="button" hidden disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8 4 12l5 4M5 12h8a6 6 0 0 1 6 6"/></svg>
+            <span>恢复上份</span>
+          </button>
           <span class="resume-stats" id="resume-stats" aria-live="polite">
             <span id="character-count">0 字符</span>
             <span>0 模块</span>
@@ -281,6 +285,7 @@ city: 上海
   <script defer src="js/markdown.js"></script>
   <script defer src="js/renderer.js"></script>
   <script defer src="js/storage.js"></script>
+  <script defer src="js/history.js"></script>
   <script defer src="js/photo.js"></script>
   <script defer src="js/file.js"></script>
   <script defer src="js/assist.js"></script>

@@ -27,6 +27,7 @@ test('index provides the editor, preview, toolbar actions, and embedded example'
   assert.match(html, /id="print-button"/);
   assert.match(html, /id="snippet-select"/);
   assert.match(html, /id="clear-button"/);
+  assert.match(html, /id="undo-button"/);
   assert.match(html, /id="resume-stats"/);
   assert.match(html, /id="zoom-select"/);
   assert.match(html, /id="page-count"/);
@@ -43,6 +44,7 @@ test('classic scripts load in dependency order and avoid ES modules', () => {
     'js/markdown.js',
     'js/renderer.js',
     'js/storage.js',
+    'js/history.js',
     'js/photo.js',
     'js/file.js',
     'js/assist.js',
@@ -123,6 +125,8 @@ test('app runtime guards localStorage, counts Unicode characters, and refreshes 
   assert.match(app, /function getStorageBackend\(\)/);
   assert.match(app, /api\.createStorage\(getStorageBackend\(\), 'resumemd\.source\.v1'\)/);
   assert.match(app, /api\.createStorage\(getStorageBackend\(\), 'resumemd\.photo\.v1'\)/);
+  assert.match(app, /api\.createStorage\(getStorageBackend\(\), 'resumemd\.source\.backup\.v1'\)/);
+  assert.match(app, /draftHistory\.restore\(editor\.value\)/);
   assert.match(app, /api\.makeResumeStats\(source, pages\.length\)/);
   assert.match(app, /api\.readImageFile\(file\)/);
   assert.match(app, /api\.prepareUploadedPhotoSource\(editor\.value, dataURL, photoStorage, photoReference\)/);

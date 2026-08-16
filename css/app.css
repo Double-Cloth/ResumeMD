@@ -406,6 +406,42 @@ select:focus-visible {
   text-overflow: ellipsis;
 }
 
+.undo-button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  margin-left: auto;
+  padding: 0 8px;
+  border: 1px solid #b9e9df;
+  border-radius: 7px;
+  background: var(--accent-soft);
+  color: #087765;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.undo-button:hover {
+  border-color: #78d8c5;
+  background: #d5f7ef;
+}
+
+.undo-button[hidden] {
+  display: none;
+}
+
+.undo-button svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 #character-count {
   flex: 0 0 auto;
   font-variant-numeric: tabular-nums;
@@ -645,6 +681,7 @@ select:focus-visible {
   }
 
   .editor-footer {
+    gap: 8px;
     padding: 0 12px;
   }
 
@@ -653,10 +690,15 @@ select:focus-visible {
   }
 
   .resume-stats {
-    width: 100%;
+    flex: 1 1 auto;
+    width: auto;
     justify-content: flex-end;
     gap: 6px;
     font-size: 10px;
+  }
+
+  .undo-button {
+    margin-left: 0;
   }
 
   .resume-stats span + span::before {

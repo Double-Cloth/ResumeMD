@@ -16,8 +16,11 @@
   const workspace = document.querySelector('.workspace');
   const editorTab = document.getElementById('editor-tab');
   const previewTab = document.getElementById('preview-tab');
+  const undoButton = document.getElementById('undo-button');
   const exampleSource = document.getElementById('example-source').textContent.trim();
   const storage = api.createStorage(getStorageBackend(), 'resumemd.source.v1');
+  const backupStorage = api.createStorage(getStorageBackend(), 'resumemd.source.backup.v1');
+  const draftHistory = api.createDraftHistory(backupStorage);
   const photoStorage = api.createStorage(getStorageBackend(), 'resumemd.photo.v1');
   const photoReference = 'resumemd-photo';
   let renderTimer = null;
@@ -68,6 +71,13 @@
       '<span>' + stats.pages.toLocaleString('zh-CN') + ' 页</span>',
     ].join('');
     pageCount.textContent = stats.pages.toLocaleString('zh-CN') + ' 页';
+  }
+
+  function updateUndoButton() {
+    const previous = draftHistory.peek();
+    const available = previous.ok && previous.available && previous.value !== editor.value;
+    undoButton.hidden = !available;
+    undoButton.disabled = !available;
   }
 
   function setPreviewZoom(value) {
@@ -196,6 +206,9 @@
     } else {
       setStatus('本地保存不可用', 'error');
     }
+
+    updateUndoButton();
+    return saveResult;
   }
 
   function scheduleRender() {
@@ -206,10 +219,18 @@
     renderTimer = window.setTimeout(renderDocument, 120);
   }
 
-  function replaceSource(source, message) {
+  function replaceSource(source, message, createBackup) {
+    const backupResult = createBackup ? draftHistory.snapshot(editor.value) : { ok: true };
     editor.value = String(source == null ? '' : source);
-    renderDocument();
-    setStatus(message, 'saved', true);
+    const saveResult = renderDocument();
+
+    if (!backupResult.ok) {
+      setStatus(message + '，但无法保存恢复点', 'error');
+    } else if (!saveResult.ok) {
+      setStatus(message + '，本地保存不可用', 'error');
+    } else {
+      setStatus(message, 'saved', true);
+    }
     editor.focus();
   }
 
@@ -308,7 +329,7 @@
 
     api.readMarkdownFile(file)
       .then(function (content) {
-        replaceSource(content, '已导入 ' + file.name);
+        replaceSource(content, '已导入 ' + file.name, true);
       })
       .catch(function (error) {
         setStatus(error.message || '导入失败', 'error');
@@ -357,15 +378,29 @@
     });
   });
 
+  undoButton.addEventListener('click', function () {
+    const result = draftHistory.restore(editor.value);
+    if (!result.ok) {
+      updateUndoButton();
+      setStatus('无法恢复上一份草稿', 'error');
+      return;
+    }
+
+    editor.value = result.value;
+    const saveResult = renderDocument();
+    setStatus(saveResult.ok ? '已恢复上一份草稿' : '草稿已恢复，但本地保存不可用', saveResult.ok ? 'saved' : 'error', saveResult.ok);
+    editor.focus();
+  });
+
   document.getElementById('reset-button').addEventListener('click', function () {
     if (window.confirm('恢复内置示例将覆盖当前内容，是否继续？')) {
-      replaceSource(exampleSource, '已恢复示例');
+      replaceSource(exampleSource, '已恢复示例', true);
     }
   });
 
   document.getElementById('clear-button').addEventListener('click', function () {
     if (window.confirm('清空当前草稿后会自动保存空白内容，是否继续？')) {
-      replaceSource('', '已清空草稿');
+      replaceSource('', '已清空草稿', true);
     }
   });
 
