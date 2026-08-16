@@ -31,6 +31,11 @@ test('index provides the editor, preview, toolbar actions, and embedded example'
   assert.match(html, /id="resume-stats"/);
   assert.match(html, /id="zoom-select"/);
   assert.match(html, /id="page-count"/);
+  assert.match(html, /id="reset-button"[^>]+aria-label="恢复内置示例"/);
+  assert.match(html, /id="clear-button"[^>]+aria-label="清空当前草稿"/);
+  assert.match(html, /id="import-button"[^>]+aria-label="导入 Markdown"/);
+  assert.match(html, /id="export-button"[^>]+aria-label="导出 Markdown"/);
+  assert.match(html, /id="print-button"[^>]+aria-label="打印或导出 PDF"/);
   assert.match(html, /id="example-source" type="text\/plain"/);
   assert.doesNotMatch(html, /`r`n/);
   assert.match(html, /href="favicon\.svg"/);
