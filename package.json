@@ -1,6 +1,6 @@
 {
   "name": "markdown-resume",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "private": true,
   "description": "完全离线、无第三方依赖的 Markdown 简历生成器",
   "scripts": {

@@ -350,8 +350,12 @@ test('resume header uses ordered identity, contact, qualification, detail, and p
   assert.match(renderer, /resume-contact-list/);
   assert.match(renderer, /resume-qualification-list/);
   assert.match(renderer, /resume-detail-list/);
+  assert.match(renderer, /resume-header-layout-/);
   assert.match(renderer, /resume-header-has-photo/);
   assert.match(css, /\.resume-header-has-photo \.resume-header-main\s*{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\) 24mm/);
+  assert.match(css, /\.resume-header-layout-sparse\.resume-header-has-photo \.resume-header-main\s*{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\) 18mm/);
+  assert.match(css, /\.resume-header-layout-balanced\.resume-header-has-photo \.resume-header-main\s*{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\) 21mm/);
+  assert.match(css, /\.resume-header-layout-dense\.resume-header-has-photo \.resume-detail-list\s*{[\s\S]*grid-column:\s*1 \/ -1/);
   assert.doesNotMatch(css, /--resume-header-rule-width/);
   assert.doesNotMatch(app, /createRange\(|syncHeaderRuleWidths|measureHeaderLineWidth/);
 });

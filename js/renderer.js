@@ -240,9 +240,24 @@
       }
     });
 
+    const identityCount = Number(Boolean(name)) + Number(Boolean(title));
+    const informationCount = identityCount + contacts.length + qualifications.length + details.length;
+    const headerLayout = informationCount <= 3
+      ? 'sparse'
+      : informationCount <= 7
+        ? 'balanced'
+        : 'dense';
+    const sideGroupCount = Number(Boolean(identityCount))
+      + Number(Boolean(contacts.length))
+      + Number(Boolean(qualifications.length));
+
     let header = '';
     if (name || title || qualifications.length || contacts.length || details.length || photo) {
-      header += '<header class="resume-header' + (photo ? ' resume-header-has-photo' : '') + '">';
+      const headerClasses = ['resume-header', 'resume-header-layout-' + headerLayout];
+      if (photo) {
+        headerClasses.push('resume-header-has-photo', 'resume-header-side-' + Math.max(1, sideGroupCount));
+      }
+      header += '<header class="' + headerClasses.join(' ') + '">';
       header += '<div class="resume-header-main">';
       header += '<div class="resume-header-content">';
       if (name || title) {

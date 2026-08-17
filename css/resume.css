@@ -40,7 +40,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: 11mm;
+  column-gap: 9mm;
 }
 
 .resume-header-has-photo .resume-header-main {
@@ -52,6 +52,82 @@
   align-content: start;
   gap: 8px;
   min-width: 0;
+}
+
+.resume-header-layout-sparse .resume-header-content {
+  gap: 6px;
+}
+
+.resume-header-layout-balanced .resume-header-content {
+  gap: 7px;
+}
+
+.resume-header-layout-sparse.resume-header-has-photo .resume-header-main {
+  grid-template-columns: minmax(0, 1fr) 18mm;
+  column-gap: 7mm;
+}
+
+.resume-header-layout-sparse.resume-header-has-photo .resume-header-content {
+  align-self: center;
+}
+
+.resume-header-layout-balanced.resume-header-has-photo .resume-header-main {
+  grid-template-columns: minmax(0, 1fr) 21mm;
+  column-gap: 8mm;
+}
+
+.resume-header-layout-sparse:not(.resume-header-has-photo) .resume-header-content,
+.resume-header-layout-balanced:not(.resume-header-has-photo) .resume-header-content {
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+  align-items: center;
+  column-gap: 10mm;
+}
+
+.resume-header-layout-sparse:not(.resume-header-has-photo) .resume-contact-list,
+.resume-header-layout-balanced:not(.resume-header-has-photo) .resume-contact-list {
+  grid-column: 2;
+  grid-row: 1;
+  justify-content: flex-end;
+  max-width: 92mm;
+  text-align: right;
+}
+
+.resume-header-layout-sparse:not(.resume-header-has-photo) .resume-qualification-list,
+.resume-header-layout-sparse:not(.resume-header-has-photo) .resume-detail-list,
+.resume-header-layout-balanced:not(.resume-header-has-photo) .resume-qualification-list,
+.resume-header-layout-balanced:not(.resume-header-has-photo) .resume-detail-list {
+  grid-column: 1 / -1;
+}
+
+.resume-header-layout-dense.resume-header-has-photo .resume-header-main {
+  row-gap: 8px;
+}
+
+.resume-header-layout-dense.resume-header-has-photo .resume-header-content {
+  display: contents;
+}
+
+.resume-header-layout-dense.resume-header-has-photo .resume-identity,
+.resume-header-layout-dense.resume-header-has-photo .resume-contact-list,
+.resume-header-layout-dense.resume-header-has-photo .resume-qualification-list {
+  grid-column: 1;
+}
+
+.resume-header-layout-dense.resume-header-has-photo .resume-photo-block {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.resume-header-layout-dense.resume-header-side-2 .resume-photo-block {
+  grid-row: 1 / span 2;
+}
+
+.resume-header-layout-dense.resume-header-side-3 .resume-photo-block {
+  grid-row: 1 / span 3;
+}
+
+.resume-header-layout-dense.resume-header-has-photo .resume-detail-list {
+  grid-column: 1 / -1;
 }
 
 .resume-identity {
@@ -101,12 +177,20 @@
   display: block;
   width: 24mm;
   height: 32mm;
-  min-width: 86px;
-  min-height: 114px;
   border-radius: 4px;
   object-fit: cover;
   border: 1px solid #bcc7d3;
   background: #f6f8fb;
+}
+
+.resume-header-layout-sparse .resume-photo {
+  width: 18mm;
+  height: 24mm;
+}
+
+.resume-header-layout-balanced .resume-photo {
+  width: 21mm;
+  height: 28mm;
 }
 
 .resume-contact-list {

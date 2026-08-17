@@ -31,7 +31,7 @@ test('renders a semantic resume header with contacts, qualifications, details, p
     '<section class="resume-section"><h2>教育背景</h2></section>'
   );
 
-  assert.match(html, /<header class="resume-header resume-header-has-photo">/);
+  assert.match(html, /<header class="resume-header resume-header-layout-dense resume-header-has-photo resume-header-side-3">/);
   assert.match(html, /<div class="resume-header-main">/);
   assert.match(html, /<div class="resume-identity">/);
   assert.match(html, /<h1>示例用户<\/h1>/);
@@ -75,6 +75,7 @@ test('renders a semantic resume header with contacts, qualifications, details, p
 test('omits empty profile fields instead of rendering placeholders', () => {
   const html = buildResumeHTML({ name: '示例用户', title: '', phone: '', email: '' }, '<p>正文</p>');
 
+  assert.match(html, /<header class="resume-header resume-header-layout-sparse">/);
   assert.match(html, /<h1>示例用户<\/h1>/);
   assert.doesNotMatch(html, /resume-title/);
   assert.doesNotMatch(html, /resume-highlight-list/);
@@ -83,6 +84,19 @@ test('omits empty profile fields instead of rendering placeholders', () => {
   assert.doesNotMatch(html, /resume-detail-list/);
   assert.doesNotMatch(html, /resume-basic-info/);
   assert.doesNotMatch(html, /basic-info-item/);
+});
+
+test('selects a balanced header layout for a moderate amount of information', () => {
+  const html = buildResumeHTML({
+    name: '示例用户',
+    title: '产品设计师',
+    phone: '000-0000-0000',
+    email: 'resume@example.com',
+    location: '杭州',
+  }, '');
+
+  assert.match(html, /<header class="resume-header resume-header-layout-balanced">/);
+  assert.doesNotMatch(html, /resume-header-layout-(?:sparse|dense)/);
 });
 
 test('renders optional profile fields inline only when supplied', () => {
