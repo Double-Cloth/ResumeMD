@@ -111,7 +111,7 @@ test('splits four contacts into a two-column grid and promotes grouped details t
     age: '20',
   }, '');
 
-  assert.match(html, /<header class="resume-header resume-header-layout-dense resume-header-contacts-grid">/);
+  assert.match(html, /<header class="resume-header resume-header-layout-dense resume-header-contacts-grid resume-header-contacts-divided">/);
   assert.match(html, /<div class="resume-contact-list resume-contact-list-grid" aria-label="联系方式">/);
 });
 
@@ -123,8 +123,31 @@ test('stacks two unusually long contact values at full width', () => {
   }, '');
 
   assert.match(html, /resume-header-contacts-stack/);
+  assert.match(html, /resume-header-contacts-divided/);
   assert.match(html, /resume-contact-list-stack/);
   assert.match(html, /resume-header-layout-balanced/);
+});
+
+test('avoids duplicate contact dividers when qualifications or a photo already structure the header', () => {
+  const withQualifications = buildResumeHTML({
+    name: '示例用户',
+    phone: '13812345678',
+    email: 'resume@example.com',
+    location: '上海',
+    website: 'github.com/example-user',
+    education: '本科',
+  }, '');
+  const withPhoto = buildResumeHTML({
+    name: '示例用户',
+    photo: 'examples/example.png',
+    phone: '13812345678',
+    email: 'resume@example.com',
+    location: '上海',
+    website: 'github.com/example-user',
+  }, '');
+
+  assert.doesNotMatch(withQualifications, /resume-header-contacts-divided/);
+  assert.doesNotMatch(withPhoto, /resume-header-contacts-divided/);
 });
 
 test('renders optional profile fields inline only when supplied', () => {

@@ -227,6 +227,12 @@
   text-align: left;
 }
 
+.resume-header-contacts-divided .resume-contact-list {
+  padding: 7px 0;
+  border-top: 1px solid #d5dbe2;
+  border-bottom: 1px solid #d5dbe2;
+}
+
 .resume-contact-list-grid .resume-contact-item,
 .resume-contact-list-stack .resume-contact-item {
   width: 100%;

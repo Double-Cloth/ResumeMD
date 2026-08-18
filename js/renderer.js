@@ -277,12 +277,19 @@
     const sideGroupCount = Number(Boolean(identityCount))
       + Number(Boolean(contacts.length))
       + Number(Boolean(qualifications.length));
+    const shouldDivideContacts = contacts.length
+      && !qualifications.length
+      && !photo
+      && contactLayout !== 'inline';
 
     let header = '';
     if (name || title || qualifications.length || contacts.length || details.length || photo) {
       const headerClasses = ['resume-header', 'resume-header-layout-' + headerLayout];
       if (contacts.length) {
         headerClasses.push('resume-header-contacts-' + contactLayout);
+      }
+      if (shouldDivideContacts) {
+        headerClasses.push('resume-header-contacts-divided');
       }
       if (photo) {
         headerClasses.push('resume-header-has-photo', 'resume-header-side-' + Math.max(1, sideGroupCount));
