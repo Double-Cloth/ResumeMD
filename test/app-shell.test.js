@@ -356,6 +356,9 @@ test('resume header uses ordered identity, contact, qualification, detail, and p
   assert.match(css, /\.resume-header-layout-sparse\.resume-header-has-photo \.resume-header-main\s*{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\) 18mm/);
   assert.match(css, /\.resume-header-layout-balanced\.resume-header-has-photo \.resume-header-main\s*{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\) 21mm/);
   assert.match(css, /\.resume-header-layout-dense\.resume-header-has-photo \.resume-detail-list\s*{[\s\S]*grid-column:\s*1 \/ -1/);
+  assert.match(css, /\.resume-contact-list-grid\s*{[\s\S]*display:\s*grid;[\s\S]*grid-template-columns:\s*minmax\(0, 5fr\) minmax\(0, 7fr\)/);
+  assert.match(css, /\.resume-header-contacts-grid:not\(\.resume-header-has-photo\) \.resume-contact-list,\s*\.resume-header-contacts-stack:not\(\.resume-header-has-photo\) \.resume-contact-list\s*{[\s\S]*grid-column:\s*1 \/ -1/);
+  assert.match(css, /\.resume-contact-list-stack\s*{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\)/);
   assert.doesNotMatch(css, /--resume-header-rule-width/);
   assert.doesNotMatch(app, /createRange\(|syncHeaderRuleWidths|measureHeaderLineWidth/);
 });

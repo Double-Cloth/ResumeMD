@@ -204,6 +204,40 @@
   line-height: 1.5;
 }
 
+.resume-contact-list-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: start;
+  gap: 5px 18px;
+}
+
+.resume-contact-list-stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 5px;
+}
+
+.resume-header-contacts-grid:not(.resume-header-has-photo) .resume-contact-list,
+.resume-header-contacts-stack:not(.resume-header-has-photo) .resume-contact-list {
+  grid-column: 1 / -1;
+  grid-row: auto;
+  justify-content: stretch;
+  max-width: none;
+  text-align: left;
+}
+
+.resume-contact-list-grid .resume-contact-item,
+.resume-contact-list-stack .resume-contact-item {
+  width: 100%;
+  align-items: flex-start;
+}
+
+.resume-contact-list-grid .resume-contact-item svg,
+.resume-contact-list-stack .resume-contact-item svg {
+  margin-top: 0.16em;
+}
+
 .resume-contact-item {
   display: inline-flex;
   align-items: center;
@@ -225,9 +259,9 @@
 }
 
 .resume-contact-item > span {
-  display: inline-flex;
-  align-items: center;
+  display: block;
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 a.resume-contact-item:hover > span {

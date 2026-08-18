@@ -19,6 +19,12 @@
     return String(value == null ? '' : value).trim();
   }
 
+  function getVisualLength(value) {
+    return Array.from(clean(value)).reduce(function (length, character) {
+      return length + (character.codePointAt(0) > 255 ? 2 : 1);
+    }, 0);
+  }
+
   function normalizeWebsite(value) {
     const raw = clean(value);
     if (!raw) {
@@ -240,13 +246,34 @@
       }
     });
 
+    const contactValues = [phone, email, location, website ? website.label : ''].filter(Boolean);
+    const contactTextLength = contactValues.reduce(function (length, value) {
+      return length + getVisualLength(value);
+    }, 0);
+    const longestContactLength = contactValues.reduce(function (length, value) {
+      return Math.max(length, getVisualLength(value));
+    }, 0);
+    const contactLayout = (contacts.length === 1 && longestContactLength >= 42)
+      || (contacts.length === 2 && contactTextLength >= 62)
+      ? 'stack'
+      : contacts.length >= 4
+        || (contacts.length >= 3 && (contactTextLength >= 48 || longestContactLength >= 26))
+        ? 'grid'
+        : 'inline';
     const identityCount = Number(Boolean(name)) + Number(Boolean(title));
     const informationCount = identityCount + contacts.length + qualifications.length + details.length;
-    const headerLayout = informationCount <= 3
+    const headerTextLength = Object.keys(data).reduce(function (length, key) {
+      if (key === 'photo' || (key === 'city' && clean(data.location) === clean(data.city))) {
+        return length;
+      }
+      return length + getVisualLength(data[key]);
+    }, 0);
+    const hasDenseGroups = contactLayout !== 'inline' && qualifications.length + details.length >= 2;
+    const headerLayout = informationCount <= 3 && headerTextLength <= 48
       ? 'sparse'
-      : informationCount <= 7
-        ? 'balanced'
-        : 'dense';
+      : informationCount >= 8 || headerTextLength >= 110 || hasDenseGroups
+        ? 'dense'
+        : 'balanced';
     const sideGroupCount = Number(Boolean(identityCount))
       + Number(Boolean(contacts.length))
       + Number(Boolean(qualifications.length));
@@ -254,6 +281,9 @@
     let header = '';
     if (name || title || qualifications.length || contacts.length || details.length || photo) {
       const headerClasses = ['resume-header', 'resume-header-layout-' + headerLayout];
+      if (contacts.length) {
+        headerClasses.push('resume-header-contacts-' + contactLayout);
+      }
       if (photo) {
         headerClasses.push('resume-header-has-photo', 'resume-header-side-' + Math.max(1, sideGroupCount));
       }
@@ -271,7 +301,7 @@
         header += '</div>';
       }
       if (contacts.length) {
-        header += '<div class="resume-contact-list" aria-label="联系方式">' + contacts.join('') + '</div>';
+        header += '<div class="resume-contact-list resume-contact-list-' + contactLayout + '" aria-label="联系方式">' + contacts.join('') + '</div>';
       }
       if (qualifications.length) {
         header += '<div class="resume-qualification-list" aria-label="核心资历">' + qualifications.join('') + '</div>';

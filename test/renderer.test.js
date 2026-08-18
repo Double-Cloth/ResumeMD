@@ -31,13 +31,13 @@ test('renders a semantic resume header with contacts, qualifications, details, p
     '<section class="resume-section"><h2>教育背景</h2></section>'
   );
 
-  assert.match(html, /<header class="resume-header resume-header-layout-dense resume-header-has-photo resume-header-side-3">/);
+  assert.match(html, /<header class="resume-header resume-header-layout-dense resume-header-contacts-grid resume-header-has-photo resume-header-side-3">/);
   assert.match(html, /<div class="resume-header-main">/);
   assert.match(html, /<div class="resume-identity">/);
   assert.match(html, /<h1>示例用户<\/h1>/);
   assert.match(html, /<p class="resume-title">软件开发实习生<\/p>/);
   assert.match(html, /<div class="resume-photo-block"><img class="resume-photo" src="examples\/example\.png" alt="示例用户"><\/div>/);
-  assert.match(html, /<div class="resume-contact-list" aria-label="联系方式">/);
+  assert.match(html, /<div class="resume-contact-list resume-contact-list-grid" aria-label="联系方式">/);
   assert.match(html, /<div class="resume-qualification-list" aria-label="核心资历">/);
   assert.match(html, /<span class="resume-qualification-label">最高学历<\/span><strong>本科在读<\/strong>/);
   assert.match(html, /<span class="resume-qualification-label">相关经验<\/span><strong>3 年项目经验<\/strong>/);
@@ -95,8 +95,36 @@ test('selects a balanced header layout for a moderate amount of information', ()
     location: '杭州',
   }, '');
 
-  assert.match(html, /<header class="resume-header resume-header-layout-balanced">/);
+  assert.match(html, /<header class="resume-header resume-header-layout-balanced resume-header-contacts-inline">/);
+  assert.match(html, /resume-contact-list-inline/);
   assert.doesNotMatch(html, /resume-header-layout-(?:sparse|dense)/);
+});
+
+test('splits four contacts into a two-column grid and promotes grouped details to a dense header', () => {
+  const html = buildResumeHTML({
+    name: '示例用户',
+    phone: '13812345678',
+    email: 'example.user.long@gmail.com',
+    location: '上海',
+    website: 'github.com/example-user',
+    gender: '男',
+    age: '20',
+  }, '');
+
+  assert.match(html, /<header class="resume-header resume-header-layout-dense resume-header-contacts-grid">/);
+  assert.match(html, /<div class="resume-contact-list resume-contact-list-grid" aria-label="联系方式">/);
+});
+
+test('stacks two unusually long contact values at full width', () => {
+  const html = buildResumeHTML({
+    name: '示例用户',
+    email: 'a.very.long.professional.address@example.com',
+    website: 'portfolio.example.com/a-very-long-profile-name',
+  }, '');
+
+  assert.match(html, /resume-header-contacts-stack/);
+  assert.match(html, /resume-contact-list-stack/);
+  assert.match(html, /resume-header-layout-balanced/);
 });
 
 test('renders optional profile fields inline only when supplied', () => {
