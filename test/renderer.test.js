@@ -128,7 +128,7 @@ test('stacks two unusually long contact values at full width', () => {
   assert.match(html, /resume-header-layout-balanced/);
 });
 
-test('avoids duplicate contact dividers when qualifications or a photo already structure the header', () => {
+test('keeps contact dividers with a photo but avoids duplicating qualification dividers', () => {
   const withQualifications = buildResumeHTML({
     name: '示例用户',
     phone: '13812345678',
@@ -147,7 +147,7 @@ test('avoids duplicate contact dividers when qualifications or a photo already s
   }, '');
 
   assert.doesNotMatch(withQualifications, /resume-header-contacts-divided/);
-  assert.doesNotMatch(withPhoto, /resume-header-contacts-divided/);
+  assert.match(withPhoto, /resume-header-contacts-divided/);
 });
 
 test('renders optional profile fields inline only when supplied', () => {

@@ -279,7 +279,6 @@
       + Number(Boolean(qualifications.length));
     const shouldDivideContacts = contacts.length
       && !qualifications.length
-      && !photo
       && contactLayout !== 'inline';
 
     let header = '';
